@@ -2,6 +2,7 @@
 #define _LINKED_LIST_H
 
 #include "linear_list.h"
+#include <iostream>
 
 template<class T>
 class Linked_list;
@@ -10,13 +11,9 @@ template<class T>
 class Linked_ord_list;
 
 template<class T>
-class ListList;
-
-template<class T>
 class List_node{
 	friend class Linked_list<T>;
 	friend class Linked_ord_list<T>;
-	friend class ListList<T>;
 private:
 	T value;
 	List_node<T> * _pPrev;
@@ -49,6 +46,7 @@ public:
 	void write(const value_type&, position); //scrivilista (scrivi un valore in una posizione);
 	void insert(const value_type&, position); //inseriscilista (non sovrascrive, inserisce in una posizione con shift);
 	virtual position search(const value_type&);
+	virtual void pushback(value_type);
 	//sovraccarico di operatori;
 	Linked_list<T>& operator=(const Linked_list<T>&);
 	bool operator==(const Linked_list<T>&) const;
@@ -214,6 +212,25 @@ void Linked_list< T >::insert(const value_type &a, position p){
 
 	length++;
 }
+template< class T >
+void Linked_list< T >::pushback(value_type a){
+
+	length++;
+	if (this->empty()){
+		insert(a, begin());
+		cout<<"used insert";
+		return;
+	}else{
+		cout<<"i'm here";
+		position t = new List_node<T>;
+		t->value = a;
+		t->_pNext = _pHead;
+		t->_pPrev = last();
+		last()->_pNext=t;
+		_pHead->_pPrev=t;
+	}
+}
+
 
 template< class T >
 void Linked_list< T >::erase(position p)const{
