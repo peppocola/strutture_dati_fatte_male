@@ -95,6 +95,8 @@ public:
   void clear();
   void insChild(treenode<T>*, T);
   void printTree(treenode<T>* t);
+  int getNonodes() const {return nonodes;}
+  int remainingNodes() const {return MAXNODES-nonodes;}
 
 private:
   void printIt(treenode<T>* t);
@@ -161,6 +163,7 @@ void Tree<T>::insSubTree(treenode<T>* node, Tree<T>& subtree){
     if (nonodes+subtree.nonodes<=MAXNODES){
 
       node->childs.pushback(subtree.getRoot());
+      nonodes+=subtree.nonodes;
       return;
     }else{
       throw "the subtree is too big";
