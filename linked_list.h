@@ -218,10 +218,8 @@ void Linked_list< T >::pushback(value_type a){
 	length++;
 	if (this->empty()){
 		insert(a, begin());
-		cout<<"used insert";
 		return;
 	}else{
-		cout<<"i'm here";
 		position t = new List_node<T>;
 		t->value = a;
 		t->_pNext = _pHead;

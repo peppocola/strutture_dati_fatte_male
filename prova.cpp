@@ -5,25 +5,23 @@ using namespace std;
 int main (void){
 
   Tree<int> prova;
+  Tree<int> subprova;
   prova.insRoot(1);
-  prova.insChild(prova.getRoot(),2);  //qui usa la funzione insert della lista perchè è ancora vuota
-  prova.insChild(prova.getRoot(),4);  //qui usa pushback perchè c'è qualcosa dentro alla lista
-  prova.insChild(prova.getRoot(),4); //qui utilizza pushback per la seconda volta ma sorge il problema doublefree or corruption
-  //le funzioni incriminate sono: insChild, pushback
-
-//
-/*
-  prova.printTree(prova.getRoot());
-
-
-
- prova.insChild(prova.getRoot(),6);
- prova.insChild(prova.getRoot(),7);
- prova.insChild(prova.getRoot(),8);
- prova.insChild(prova.getRoot(),9);
+  prova.insChild(prova.getRoot(),2);
+  prova.insChild(prova.getRoot(),4);
+  prova.insChild(prova.getRoot(),4);
   prova.insChild(prova.getRoot()->firstChild(), 3);
 
+  subprova.insRoot(2);
+  subprova.insChild(subprova.getRoot(),6);
+  subprova.insChild(subprova.getRoot(),7);
+  subprova.insChild(subprova.getRoot(),8);
+  subprova.insChild(subprova.getRoot(),9);
+
   prova.printTree(prova.getRoot());
-*/
+  subprova.printTree(subprova.getRoot());
+
+  prova.insSubTree(prova.getRoot()->lastChild(), subprova);
+  prova.printTree(prova.getRoot());
   return 0;
 }

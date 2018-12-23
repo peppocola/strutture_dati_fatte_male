@@ -82,7 +82,8 @@ class Tree{
 public:
   typedef Linked_list<treenode<T>*> listofchilds;
   Tree();
-  //tree(const tree<T>&);
+  Tree(const Tree&);
+  Tree &operator=(const Tree &t);
   ~Tree();
   treenode<T>* getRoot()const;
   bool empty () const;
@@ -90,11 +91,14 @@ public:
   void insRootNode(treenode<T>* node);
   void insRoot(T lab);
   void insSubTree(treenode<T>* node, Tree<T>& subtree);
-  void remove(treenode<T>* node);
+  void removenode(treenode<T>* node);
+  void clear();
   void insChild(treenode<T>*, T);
   void printTree(treenode<T>* t);
 
 private:
+  void printIt(treenode<T>* t);
+  treenode<T>* copynode (treenode<T>* parent, treenode<T>* node);
   treenode<T>* root;
   size_t nonodes;
 };
@@ -103,10 +107,23 @@ Tree<T>::Tree(){
     root=nullptr;
     nonodes=0;
 }
-//Tree(const tree<T>&);
+template<class T>
+Tree<T>::Tree(const Tree<T>& t){
+  nonodes=0;
+  root=copynode(nullptr, t.root);
+}
+template<class T>
+Tree<T>& Tree<T>::operator=(const Tree<T> &t){
+
+  if (this == &t) return *this;
+  if(!empty()) clear();
+  root=copynode(nullptr, t.root);
+
+}
+
 template<class T>
 Tree<T>::~Tree(){
-  remove(root);
+  removenode(root);
 }
 
 template<class T>
@@ -143,7 +160,7 @@ void Tree<T>::insSubTree(treenode<T>* node, Tree<T>& subtree){
   if (node!=nullptr){
     if (nonodes+subtree.nonodes<=MAXNODES){
 
-      node->childs.pushback(subtree);
+      node->childs.pushback(subtree.getRoot());
       return;
     }else{
       throw "the subtree is too big";
@@ -157,23 +174,30 @@ template<class T>
 size_t Tree<T>::size()const{return nonodes;}
 
 template<class T>
-void Tree<T>::remove(treenode<T>* node){
+void Tree<T>::removenode(treenode<T>* node){
 
   if (node!=nullptr){
 
-    listofchilds &childy=node->getChilds();
+    const listofchilds &childy=node->getChilds();
     List_node<treenode<T>*>*son=childy.begin();
 
       while(!childy.end(son)){
 
-        remove(childy.read(son));
+        removenode(childy.read(son));
         son=childy.next(son);
 
       }
-      childy.clear();
       delete node;
       nonodes--;
   }
+
+}
+template<class T>
+void Tree<T>::clear(){
+
+  removenode(root);
+  root=nullptr;
+
 
 }
 
@@ -194,16 +218,25 @@ void Tree<T>::insChild(treenode<T>* node, T lab){
 template<class T>
 void Tree<T>::printTree(treenode<T>* t){
 
+  printIt(t);
+  cout<<endl;
+
+}
+
+
+template<class T>
+void Tree<T>::printIt(treenode<T>* t){
+
   if (t!=nullptr){
 
     cout<<"["<<t->label<<" ";
 
-    listofchilds &childy=t->getChilds();
+    const listofchilds &childy=t->getChilds();
     List_node<treenode<T>*>*son=childy.begin();
 
       while(!childy.end(son)){
 
-        printTree(childy.read(son));
+        printIt(childy.read(son));
         son=childy.next(son);
 
       }
@@ -211,4 +244,33 @@ void Tree<T>::printTree(treenode<T>* t){
   }
 
 }
+
+
+template<class T>
+treenode<T>* Tree<T>::copynode (treenode<T>* parent, treenode<T>* node){
+
+  if (node==nullptr){
+    return nullptr;
+  }
+  treenode<T>* newnode=new treenode<T>;
+  newnode->label=node->label;
+  newnode->parent=parent;
+
+  const listofchilds &childy=node->getChilds();
+  List_node<treenode<T>*>*son=childy.begin();
+
+  while(!childy.end(son)){
+
+    treenode<T>* tmpnode=copynode(childy.read(son), newnode);
+    newnode->childs.pushback(tmpnode);
+    son=childy.next(son);
+
+  }
+
+  nonodes++;
+
+  return newnode;
+}
+
+
 #endif
