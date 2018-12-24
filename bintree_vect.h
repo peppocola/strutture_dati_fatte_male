@@ -1,10 +1,11 @@
 #ifndef _BINTREE_VECT_H_
 #define _BINTREE_VECT_H_
 #include <iostream>
+#include "bintree.h"
 #define NIL -1
 
 template <class T>
-class bintree_vect{
+class bintree_vect: public bintree<T, int>{
 
 public:
 
@@ -45,10 +46,8 @@ typedef int Nodo;
   void ins_root(value_type);
   void ins_sx(Nodo, value_type);
   void ins_dx(Nodo, value_type);
-  void print() const;
 
 private:
-  void printSubTree(const Nodo) const;
   int MAXLUNG;
   Cella *spazio;
   int nNodi;
@@ -249,37 +248,6 @@ if (n != NIL)
   spazio[n].valore = a;
 else
   throw "the node is null";
-}
-
-template <class T>
-void bintree_vect<T>::print() const{
-	if (!empty())
-		printSubTree(root());
-	else
-		std::cout << "[]" << std::endl;
-	std::cout << std::endl;
-}
-
-template <class T>
-void bintree_vect<T>::printSubTree(const Nodo n) const{
-  if (sx_empty(n) && dx_empty(n)){
-    std::cout << "[" << read(n) << "]";
-    return;
-  }
-  std::cout << "[" << read(n) << ",";
-	if (!sx_empty(n))
-		printSubTree(sx(n));
-	else std::cout << "[sxNIL]";
-	std::cout << ",";
-	if (!dx_empty(n))
-		printSubTree(dx(n));
-	else std::cout << "[dxNIL]";
-	std::cout << "]";
-}
-template<class T>
-std::ostream& operator<<(std::ostream& out, const bintree_vect<T>& t) {
-    t.print();
-    return out;
 }
 
 #endif /* _bintree_vect_H_ */
