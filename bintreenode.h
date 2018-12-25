@@ -18,6 +18,7 @@ class bintreenode{
   bintreenode<T>* getLChild() const{return Lchild;}
   bintreenode<T>* getRChild() const{return Rchild;}
   bintreenode<T>& operator=(const bintreenode<T>* &node);
+  void clear();
   void removeleft(bintreenode<T>* toremove);
   void removeright(bintreenode<T>* toremove);
 
@@ -65,13 +66,18 @@ template <class T>
 bintreenode<T>& bintreenode<T>::operator=(const bintreenode<T>* &node){
 
   if (this!=node){
-    removeleft(this);
-    removeright(this);
-    bintreenode<T>*tmp=this;
+    clear();
     this=copynode(node, nullptr);
-    delete tmp;
   }
   return *this;
+}
+
+template <class T>
+void bintreenode<T>::clear(){
+  removeleft(this);
+  removeright(this);
+  delete this;
+  this=nullptr;
 }
 
 template <class T>
