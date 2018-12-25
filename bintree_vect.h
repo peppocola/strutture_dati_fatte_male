@@ -9,8 +9,8 @@ class bintree_vect: public bintree<T, int>{
 
 public:
 
-typedef T value_type;
-typedef int Nodo;
+typedef typename bintree<T, int>::value_type value_type;
+typedef typename bintree<T, int>::Nodo Nodo;
 
   struct _cella{
       Nodo genitore;
