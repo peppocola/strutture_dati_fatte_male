@@ -17,15 +17,17 @@ class bintreenode{
   bintreenode<T>* getFather() const{return father;}
   bintreenode<T>* getLChild() const{return Lchild;}
   bintreenode<T>* getRChild() const{return Rchild;}
-  void removenode(bintreenode<T>*);
   bintreenode<T>& operator=(const bintreenode<T>* &node);
+  void removeleft(bintreenode<T>* toremove);
+  void removeright(bintreenode<T>* toremove);
+
 private:
   T value;
   bintreenode<T>* father;
   bintreenode<T>* Lchild;
   bintreenode<T>* Rchild;
-
-  bintreenode<T>* copynode(bintreenode<T>*,bintreenode<T>*);
+  void removenode(bintreenode<T>*);
+  bintreenode<T>* copynode(const bintreenode<T>*tocopy, const bintreenode<T>*fa);
 
 };
 
@@ -55,7 +57,7 @@ bintreenode<T>::bintreenode(T val, bintreenode<T>* fa){
 template <class T>
 bintreenode<T>::bintreenode(const bintreenode<T> &btn){
 
-  this=copynode(btn, btn->father);
+  this=copynode(btn, nullptr);
 
 }
 
@@ -63,17 +65,17 @@ template <class T>
 bintreenode<T>& bintreenode<T>::operator=(const bintreenode<T>* &node){
 
   if (this!=node){
-    this=removenode(this->Lchild, this);
-    this=removenode(this->Rchild, this);
+    removeleft(this);
+    removeright(this);
     bintreenode<T>*tmp=this;
-    this=copynode(node, node->father);
+    this=copynode(node, nullptr);
     delete tmp;
-    return this;
   }
+  return *this;
 }
 
 template <class T>
-bintreenode<T>* bintreenode<T>::copynode(bintreenode<T>* tocopy, bintreenode<T>* fa){
+bintreenode<T>* bintreenode<T>::copynode(const bintreenode<T>* tocopy, const bintreenode<T>* fa){
 
   if (tocopy==nullptr)
     return nullptr;
@@ -93,9 +95,28 @@ void bintreenode<T>::removenode(bintreenode<T>* toremove){
   if (toremove!=nullptr){
     removenode(toremove->Lchild);
     removenode(toremove->Rchild);
+
     delete toremove;
   }
 
+}
+
+template <class T>
+void bintreenode<T>::removeleft(bintreenode<T>* toremove){
+
+  if (toremove!=nullptr){
+    removenode(toremove->Lchild);
+    toremove->Lchild=nullptr;
+  }
+}
+
+template <class T>
+void bintreenode<T>::removeright(bintreenode<T>* toremove){
+
+  if (toremove!=nullptr){
+    removenode(toremove->Rchild);
+    toremove->Rchild=nullptr;
+  }
 }
 
 #endif
