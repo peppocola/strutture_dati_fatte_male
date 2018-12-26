@@ -1,5 +1,5 @@
-#ifndef BINTREE_LIST_H
-#define BINTREE_LIST_H
+#ifndef BINTREENODE_H
+#define BINTREENODE_H
 #include "bintree.h"
 
 template <class>
