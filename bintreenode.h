@@ -21,6 +21,10 @@ class bintreenode{
   void clear();
   void removeleft(bintreenode<T>* toremove);
   void removeright(bintreenode<T>* toremove);
+  void insertL(bintreenode<T>* position, T val);
+  void insertR(bintreenode<T>* position, T val);
+  void insertLsub(bintreenode<T>* position, bintreenode<T>* sub);
+  void insertRsub(bintreenode<T>* position, bintreenode<T>* sub);
 
 private:
   T value;
@@ -124,5 +128,46 @@ void bintreenode<T>::removeright(bintreenode<T>* toremove){
     toremove->Rchild=nullptr;
   }
 }
+
+template <class T>
+void bintreenode<T>::insertL(bintreenode<T>* position, T val){
+  if(position->Lchild==nullptr){
+    bintreenode<T>* newnode=new bintreenode<T>;
+    newnode->father=position;
+    newnode->value=val;
+    position->Lchild=newnode;
+  }else throw "a LEFTNODE already exists";
+}
+
+template <class T>
+void bintreenode<T>::insertR(bintreenode<T>* position, T val){
+  if(position->Rchild==nullptr){
+    bintreenode<T>* newnode=new bintreenode<T>;
+    newnode->father=position;
+    newnode->value=val;
+    position->Rchild=newnode;
+  }else throw "a RIGHTNODE already exists";
+}
+
+template <class T>
+void insertLsub(bintreenode<T>* position, bintreenode<T>* sub){
+  if(position->Lchild==nullptr ){
+    if (sub->father==nullptr){
+      position->Lchild=sub;
+      sub->father=position;
+    }else throw "the node can't have 2 fathers, is the node adopted?";
+  }else throw "a LEFTNODE already exists";
+}
+
+template <class T>
+void insertRsub(bintreenode<T>* position, bintreenode<T>* sub){
+  if(position->Rchild==nullptr ){
+    if (sub->father==nullptr){
+      position->Rchild=sub;
+      sub->father=position;
+    }else throw "the node can't have 2 fathers, is the node adopted?";
+  }else throw "a RIGHTNODE already exists";
+}
+
 
 #endif
