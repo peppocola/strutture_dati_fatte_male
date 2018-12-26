@@ -29,6 +29,7 @@ public:
   int remainingNodes() const {return MAXNODES-nonodes;}
 
 private:
+  void _remove(treenode<T>* node);
   void printIt(treenode<T>* t);
   treenode<T>* copynode (treenode<T>* parent, treenode<T>* node);
   treenode<T>* root;
@@ -107,7 +108,7 @@ template<class T>
 size_t Tree<T>::size()const{return nonodes;}
 
 template<class T>
-void Tree<T>::removenode(treenode<T>* node){
+void Tree<T>::_remove(treenode<T>* node){
 
   if (node!=nullptr){
 
@@ -125,6 +126,22 @@ void Tree<T>::removenode(treenode<T>* node){
   }
 
 }
+
+template<class T>
+void Tree<T>::removenode(treenode<T>* node){
+  if(node!=nullptr){
+    if(node->father==nullptr){
+      _remove(node);
+      root=nullptr;
+    }else{
+      node->father->childs.erase(node->father->childs.find(node));
+      _remove(node);
+    }
+
+  }
+
+}
+
 template<class T>
 void Tree<T>::clear(){
 
