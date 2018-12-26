@@ -67,6 +67,13 @@ bintreenode<T>::bintreenode(const bintreenode<T> &btn){
 }
 
 template <class T>
+bintreenode<T>::~bintreenode(){
+  removeleft(this);
+  removeright(this);
+  delete this;
+}
+
+template <class T>
 bintreenode<T>& bintreenode<T>::operator=(const bintreenode<T>* &node){
 
   if (this!=node){
@@ -80,8 +87,6 @@ template <class T>
 void bintreenode<T>::clear(){
   removeleft(this);
   removeright(this);
-  delete this;
-  this=nullptr;
 }
 
 template <class T>

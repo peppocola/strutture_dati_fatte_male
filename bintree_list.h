@@ -42,13 +42,8 @@ private:
 
 template <class T>
 bintree_list<T>::bintree_list(){
-
   _root=nullptr;
-  _root->father=nullptr;
-  _root->Lchild=nullptr;
-  _root->Rchild=nullptr;
   nonodes=0;
-
 }
 
 template <class T>
@@ -80,7 +75,8 @@ bintree_list<T>& bintree_list<T>::operator=(const bintree_list<T> &t){
 
   if (this!=&t){
 
-    _root.clear();
+    _root->clear();
+    delete _root;
     nonodes=0;
     _root=bintree_list<T>::copynode(t._root, nullptr);
 
@@ -91,7 +87,7 @@ bintree_list<T>& bintree_list<T>::operator=(const bintree_list<T> &t){
 template <class T>
 void bintree_list<T>::create(){
   if (!empty()){
-    _root.clear();
+    _root->clear();
   }
   _root=nullptr;
   _root->father=nullptr;
@@ -101,7 +97,7 @@ void bintree_list<T>::create(){
 
 template <class T>
 bool bintree_list<T>::empty() const{
-  return root==nullptr;
+  return _root==nullptr;
 }
 
 template <class T>
@@ -111,27 +107,27 @@ typename bintree_list<T>::Nodo bintree_list<T>::root() const{
 
 template <class T>
 typename bintree_list<T>::Nodo bintree_list<T>::parent(Nodo n) const{
-  return n.getFather();
+  return n->getFather();
 }
 
 template <class T>
 typename bintree_list<T>::Nodo bintree_list<T>::sx(Nodo n) const{
-  return n.getLChild();
+  return n->getLChild();
 }
 
 template <class T>
 typename bintree_list<T>::Nodo bintree_list<T>::dx(Nodo n) const{
-  return n.getRChild();
+  return n->getRChild();
 }
 
 template <class T>
 bool bintree_list<T>::sx_empty(Nodo n) const{
-  return n.getLChild()==nullptr;
+  return n->getLChild()==nullptr;
 }
 
 template <class T>
 bool bintree_list<T>::dx_empty(Nodo n) const{
-  return n.getRChild()==nullptr;
+  return n->getRChild()==nullptr;
 }
 
 template <class T>
@@ -141,10 +137,10 @@ void bintree_list<T>::erase(Nodo n){
     _root=nullptr;
     nonodes=0;
 
-  }else if (n->father.getLChild()==n){
-    removeleft(n->father);
+  }else if (n->father->getLChild()==n){
+    n->removeleft(n->father);
   }else{
-    removeright(n->father);
+    n->removeright(n->father);
   }
 }
 
@@ -163,7 +159,7 @@ void bintree_list<T>::ins_root(value_type v){
   if (_root==nullptr){
     bintreenode<T>* tmp=new bintreenode<T>;
     tmp->value=v;
-    root=tmp;
+    _root=tmp;
     nonodes++;
   }else throw "tree already has a root";
 }
