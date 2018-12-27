@@ -68,9 +68,6 @@ bintreenode<T>::bintreenode(const bintreenode<T> &btn){
 
 template <class T>
 bintreenode<T>::~bintreenode(){
-  removeleft(this);
-  removeright(this);
-  delete this;
 }
 
 template <class T>

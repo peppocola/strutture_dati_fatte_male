@@ -1,6 +1,7 @@
 #ifndef BINTREE_LIST_H
 #define BINTREE_LIST_H
 #include "bintreenode.h"
+#include "bintree.h"
 #include <iostream>
 
 template <class T>
@@ -192,23 +193,12 @@ void bintree_list<T>::ins_dx(Nodo position, value_type val){
 template <class T>
 void bintree_list<T>::removenode(bintreenode<T>* toremove){
 
-  if (toremove==nullptr) std::cout<<"isnull";
   if (toremove!=nullptr){
-/*
-    std::cout<<_root->value<<"root value"<<std::endl;
-    std::cout<<_root->father<<"root father"<<std::endl;
-    std::cout<<_root->Lchild<<"root LCHILD"<<std::endl;
-    std::cout<<_root->Rchild<<"root RCHILD"<<std::endl;
-
-    std::cout<<_root->Lchild<<"LCHILD"<<std::endl;
-    std::cout<<_root->Lchild->value<<"value"<<std::endl;
-    std::cout<<_root->Lchild->father->value<<"father value"<<std::endl;
-    std::cout<<_root->Lchild->Lchild<<"   "<< _root->Lchild->Rchild<<" left e right"<<std::endl;
-*/
     removenode(toremove->Lchild);
     removenode(toremove->Rchild);
     delete toremove;
     nonodes--;
+
   }
 }
 
