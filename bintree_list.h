@@ -1,6 +1,7 @@
 #ifndef BINTREE_LIST_H
 #define BINTREE_LIST_H
 #include "bintreenode.h"
+#include <iostream>
 
 template <class T>
 class bintree_list : public bintree<T, bintreenode<T>*>{
@@ -31,7 +32,9 @@ public:
   void ins_root(value_type);
   void ins_sx(Nodo, value_type);
   void ins_dx(Nodo, value_type);
-
+  void removeleft(bintreenode<T>* toremove);
+  void removeright(bintreenode<T>* toremove);
+  size_t getnonodes(){return nonodes;}
 
 private:
   bintreenode<T>* _root;
@@ -133,14 +136,13 @@ bool bintree_list<T>::dx_empty(Nodo n) const{
 template <class T>
 void bintree_list<T>::erase(Nodo n){
   if (n->father==nullptr){
-    bintree_list<T>::removenode(n);
+    removenode(n);
     _root=nullptr;
-    nonodes=0;
 
   }else if (n->father->getLChild()==n){
-    n->removeleft(n->father);
+    removeleft(n->father);
   }else{
-    n->removeright(n->father);
+    removeright(n->father);
   }
 }
 
@@ -190,13 +192,41 @@ void bintree_list<T>::ins_dx(Nodo position, value_type val){
 template <class T>
 void bintree_list<T>::removenode(bintreenode<T>* toremove){
 
+  if (toremove==nullptr) std::cout<<"isnull";
   if (toremove!=nullptr){
+/*
+    std::cout<<_root->value<<"root value"<<std::endl;
+    std::cout<<_root->father<<"root father"<<std::endl;
+    std::cout<<_root->Lchild<<"root LCHILD"<<std::endl;
+    std::cout<<_root->Rchild<<"root RCHILD"<<std::endl;
+
+    std::cout<<_root->Lchild<<"LCHILD"<<std::endl;
+    std::cout<<_root->Lchild->value<<"value"<<std::endl;
+    std::cout<<_root->Lchild->father->value<<"father value"<<std::endl;
+    std::cout<<_root->Lchild->Lchild<<"   "<< _root->Lchild->Rchild<<" left e right"<<std::endl;
+*/
     removenode(toremove->Lchild);
     removenode(toremove->Rchild);
-    nonodes--;
     delete toremove;
+    nonodes--;
   }
+}
 
+template <class T>
+void bintree_list<T>::removeleft(bintreenode<T>* toremove){
+  if (toremove!=nullptr){
+    removenode(toremove->Lchild);
+    toremove->Lchild=nullptr;
+  }
+}
+
+template <class T>
+void bintree_list<T>::removeright(bintreenode<T>* toremove){
+
+  if (toremove!=nullptr){
+    removenode(toremove->Rchild);
+    toremove->Rchild=nullptr;
+  }
 }
 
 #endif
