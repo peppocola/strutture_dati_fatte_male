@@ -164,6 +164,8 @@ Linked_list<K> hash_table<K,E>::keys()const
 {
   Linked_list<K> kyz;
 
+  //cout<<"SIZE"<<kyz.size()<<endl;
+
   for (int i=0; i<divisor; i++){
 
     if (table[i]!=NULL){
@@ -173,6 +175,9 @@ Linked_list<K> hash_table<K,E>::keys()const
     }
 
   }
+
+  //cout<<"SIZE"<<kyz.size()<<endl;
+  //cout<<kyz<<endl;
 
   return kyz;
 
@@ -283,6 +288,7 @@ void hash_table<K,E>::erase(const K& k){
     return;
   }else{
     delete table[b];
+    table[b]=NULL;
     dsize--;
   }
 }

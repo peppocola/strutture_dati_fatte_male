@@ -35,8 +35,12 @@ void histo::add(int v){
 }
 
 void histo::remove(int v){
-  if(hist.contains(v) && hist[v]!=0){
-    hist.insert(v, hist[v]-1);
+  if(hist.contains(v)){
+    if (hist[v]>=2){
+      hist.insert(v, hist[v]-1);
+    }else{
+      hist.erase(v);
+    }
   }
 }
 
