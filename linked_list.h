@@ -45,8 +45,9 @@ public:
 	virtual void erase(position) const; //cancellaelemlista;
 	void write(const value_type&, position); //scrivilista (scrivi un valore in una posizione);
 	void insert(const value_type&, position); //inseriscilista (non sovrascrive, inserisce in una posizione con shift);
-	virtual position search(const value_type&);
-	virtual void pushback(value_type);
+	virtual position search(const value_type&)const;
+	virtual void pushback(const value_type&);
+	virtual bool contains(const value_type&)const;
 	//sovraccarico di operatori;
 	Linked_list<T>& operator=(const Linked_list<T>&);
 	bool operator==(const Linked_list<T>&) const;
@@ -213,7 +214,7 @@ void Linked_list< T >::insert(const value_type &a, position p){
 	length++;
 }
 template< class T >
-void Linked_list< T >::pushback(value_type a){
+void Linked_list< T >::pushback(const value_type& a){
 
 	length++;
 	if (this->empty()){
@@ -278,7 +279,7 @@ bool Linked_list<T>::operator==(const Linked_list<T> &L) const{
 }
 
 template <class T>
-typename Linked_list<T>::position Linked_list<T>::search(const value_type& v){
+typename Linked_list<T>::position Linked_list<T>::search(const value_type& v)const{
 
 	position p;
 	p=begin();
@@ -289,6 +290,20 @@ typename Linked_list<T>::position Linked_list<T>::search(const value_type& v){
 	}
 	throw "not found"	;
 	return nullptr;
+
+}
+
+template <class T>
+bool Linked_list<T>::contains(const value_type& v)const{
+
+	position p;
+	p=begin();
+	while (p!=_pHead){
+		if (p->value==v)
+			return true;
+		p=next(p);
+	}
+	return false;
 
 }
 #endif // _LINKED_LIST_H
