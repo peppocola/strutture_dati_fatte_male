@@ -215,8 +215,6 @@ void Linked_list< T >::insert(const value_type &a, position p){
 }
 template< class T >
 void Linked_list< T >::pushback(const value_type& a){
-
-	length++;
 	if (this->empty()){
 		insert(a, begin());
 		return;
@@ -227,6 +225,7 @@ void Linked_list< T >::pushback(const value_type& a){
 		t->_pPrev = last();
 		last()->_pNext=t;
 		_pHead->_pPrev=t;
+		length++;
 	}
 }
 
