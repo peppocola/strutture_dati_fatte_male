@@ -2,6 +2,7 @@
 #define HASH_TABLE_H
 
 #include "dictionary.h"
+#include "linked_list.h"
 #include <string>
 
 using std::string;
@@ -11,6 +12,17 @@ template<class T>
 class hash{
 public:
   size_t operator()(const T the_key) const;
+};
+
+template<>
+class hash<int>
+{
+public:
+  size_t operator()(const int the_key)const {
+    return the_key;
+  }
+
+  //stupid hash function for histogram
 };
 
 /* a specialization with type string */
@@ -66,6 +78,12 @@ public:
 
   void create(){};
 
+  bool contains(const K& the_key) const;
+
+  Linked_list<K> keys() const;
+
+  Linked_list<E> values() const;
+
   int search(const K& ) const;
 
   mypair< K, E>* find(const K& ) const;
@@ -108,6 +126,61 @@ hash_table<K,E>::~hash_table(){
   delete[] table;
   table=nullptr;
 }
+
+template<class K, class E>
+bool hash_table<K,E>::contains(const K& the_key) const
+{
+  int i = (int) hashm(the_key) % divisor;   // the home bucket
+  int j = i;
+  do {
+    if (table[j] == NULL){
+      return false;
+    }else if(table[j]->first == the_key){
+      return true;
+    }else j = (j+1) % divisor;               // the next bucket
+  }while (j != i);
+
+  return false;
+}
+
+template<class K, class E>
+Linked_list<K> hash_table<K,E>::keys()const
+{
+  Linked_list<K> kyz;
+
+  for (int i=0; i<divisor; i++){
+
+    if (table[i]!=NULL){
+
+      kyz.pushback(table[i]->first);
+
+    }
+
+  }
+
+  return kyz;
+
+}
+
+template<class K, class E>
+Linked_list<E> hash_table<K,E>::values()const
+{
+  Linked_list<E> vlz;
+
+  for (int i=0; i<divisor; i++){
+
+    if (table[i]!=NULL){
+
+        vlz.pushback(table[i]->second);
+
+    }
+
+  }
+
+  return vlz;
+
+}
+
 
 template<class K, class E>
 int hash_table<K,E>::search(const K& the_key) const
@@ -160,10 +233,8 @@ void hash_table<K,E>::insert( mypair<K, E>& the_pair)
     if (table[b]->first == the_pair.first)
       // duplicate, change table[b]->second
       table[b]->second = the_pair.second;
-    else{
-      // table is full
+    else throw "table is full";
       // throw the exception hash_table_full();
-    }
   }
 }
 
