@@ -21,6 +21,10 @@ struct mypair {
     first = the_pair.first;
     second = the_pair.second;
   }
+  mypair(const K& k, const E& e){
+    first=k;
+    second=e;
+  }
 };
 
 

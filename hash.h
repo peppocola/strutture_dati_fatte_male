@@ -73,6 +73,10 @@ public:
   void erase(const K& k);
   void modify(const K& k, const E& e);
 
+  E& operator[](K&);
+  E operator[](K&)const;
+
+
   hash_table(int);	    // the constructor
   ~hash_table();
 
@@ -89,6 +93,8 @@ public:
   mypair< K, E>* find(const K& ) const;
 
   void insert( mypair< K, E>& );
+
+  void insert(const K&, const E&);
 
 private:
  mypair<K, E>** table;    // the hash table
@@ -125,6 +131,16 @@ hash_table<K,E>::~hash_table(){
   }
   delete[] table;
   table=nullptr;
+}
+
+template<class K, class E>
+E& hash_table<K,E>::operator[](K& key){
+  return find(key)->second;
+}
+
+template<class K, class E>
+E hash_table<K,E>::operator[](K& key)const{
+  return find(key)->second;
 }
 
 template<class K, class E>
@@ -236,6 +252,28 @@ void hash_table<K,E>::insert( mypair<K, E>& the_pair)
     else throw "table is full";
       // throw the exception hash_table_full();
   }
+}
+
+template<class K, class E>
+void hash_table<K,E>::insert(const K& key, const E& value){
+
+  // search the table for a matching element
+  int b = search(key);
+  // check if matching element found
+  if (table[b] == NULL){
+    // no matching element and table not full
+    table[b] = new mypair<K,E> (key, value);
+    dsize++;
+  } else {
+    // check id duplicate or table full
+    if (table[b]->first == key)
+      // duplicate, change table[b]->second
+      table[b]->second = value;
+    else throw "table is full";
+      // throw the exception hash_table_full();
+  }
+
+
 }
 
 template<class K, class E>
