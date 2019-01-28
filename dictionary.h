@@ -7,6 +7,7 @@
 
 #ifndef _DICTIONARY_H
 #define _DICTIONARY_H
+#include "linked_list.h"
 
 template<class K, class E>
 struct mypair {
@@ -44,6 +45,12 @@ public:
       // delete the pair with key k
   virtual void modify(const K& k, const E& e) = 0;
       // modify the value of the pair with key k to e
+  virtual bool contains(const K& the_key) const = 0;
+      //true if dictiionary contains the keys
+  virtual Linked_list<K> keys() const= 0;
+      //return list of keys
+  virtual Linked_list<E> values() const= 0;
+      //return list of values
 };
 
 #endif
