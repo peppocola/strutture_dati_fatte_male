@@ -46,6 +46,7 @@ class bintree {
 
     int kSubtree(const Nodo, const int)const;
     int sumSubtree(const Nodo)const;
+    int maxSumSubtree(const Nodo n)const;
 
 
 private:
@@ -209,6 +210,25 @@ int bintree<T,N>::sumSubtree(const Nodo n)const{
     result+=sumSubtree(dx(n));
   }
 
+  return result;
+}
+
+template<class T, class N>
+int bintree<T,N>::maxSumSubtree(const Nodo n)const{
+
+  int result=sumSubtree(n);
+  queue<Nodo> q;
+
+  if(!sx_empty(n)) q.push(sx(n));
+  if(!dx_empty(n)) q.push(dx(n));
+
+  while (!q.empty()){
+    int tmp=sumSubtree(q.front());
+    if (tmp>result) result=tmp;
+    if(!sx_empty(q.front())) q.push(sx(q.front()));
+    if(!dx_empty(q.front())) q.push(dx(q.front()));
+    q.pop();
+  }
   return result;
 }
 
