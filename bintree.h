@@ -191,7 +191,6 @@ int bintree<T,N>::kSubtree(const Nodo n, const int k)const{
   q.push(n);
   while (!q.empty()){
     if (sumSubtree(q.front())==k) result++;
-    cout<<read(q.front())<<" this subtree makes the result "<<result<<endl;
     if(!sx_empty(q.front())) q.push(sx(q.front()));
     if(!dx_empty(q.front())) q.push(dx(q.front()));
     q.pop();
