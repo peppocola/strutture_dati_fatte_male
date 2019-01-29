@@ -44,6 +44,10 @@ class bintree {
 
     virtual void print() const;
 
+    int kSubtree(const Nodo, const int)const;
+    int sumSubtree(const Nodo)const;
+
+
 private:
     virtual int _width(Nodo, int);
     virtual int _depth(Nodo, int);
@@ -176,6 +180,37 @@ int bintree<T,N>::_width(Nodo n, int w){
     }
   }
   return w;
+}
+
+//dato un albero binario di n nodi contare i sottoalberi che hanno somma dei nodi pari ad un intero k
+template<class T, class N>
+int bintree<T,N>::kSubtree(const Nodo n, const int k)const{
+
+  int result=0;
+  queue<Nodo> q;
+  q.push(n);
+  while (!q.empty()){
+    if (sumSubtree(q.front())==k) result++;
+    cout<<read(q.front())<<" this subtree makes the result "<<result<<endl;
+    if(!sx_empty(q.front())) q.push(sx(q.front()));
+    if(!dx_empty(q.front())) q.push(dx(q.front()));
+    q.pop();
+  }
+  return result;
+}
+
+template<class T, class N>
+int bintree<T,N>::sumSubtree(const Nodo n)const{
+
+  int result=read(n);
+  if(!sx_empty(n)){
+    result+=sumSubtree(sx(n));
+  }
+  if(!dx_empty(n)){
+    result+=sumSubtree(dx(n));
+  }
+
+  return result;
 }
 
 #endif /* _BINTREE_H_ */
