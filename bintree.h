@@ -191,9 +191,10 @@ int bintree<T,N>::kSubtree(const Nodo n, const int k)const{
   queue<Nodo> q;
   q.push(n);
   while (!q.empty()){
-    if (sumSubtree(q.front())==k) result++;
-    if(!sx_empty(q.front())) q.push(sx(q.front()));
-    if(!dx_empty(q.front())) q.push(dx(q.front()));
+    Nodo front=q.front();
+    if (sumSubtree(front)==k) result++;
+    if(!sx_empty(front)) q.push(sx(front));
+    if(!dx_empty(front)) q.push(dx(front));
     q.pop();
   }
   return result;
@@ -223,10 +224,11 @@ int bintree<T,N>::maxSumSubtree(const Nodo n)const{
   if(!dx_empty(n)) q.push(dx(n));
 
   while (!q.empty()){
-    int tmp=sumSubtree(q.front());
+    Nodo front=q.front();
+    int tmp=sumSubtree(front);
     if (tmp>result) result=tmp;
-    if(!sx_empty(q.front())) q.push(sx(q.front()));
-    if(!dx_empty(q.front())) q.push(dx(q.front()));
+    if(!sx_empty(front)) q.push(sx(front));
+    if(!dx_empty(front)) q.push(dx(front));
     q.pop();
   }
   return result;
