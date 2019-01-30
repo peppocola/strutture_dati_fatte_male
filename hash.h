@@ -79,22 +79,23 @@ public:
 
   hash_table(int);	    // the constructor
   ~hash_table();
+  hash_table(const hash_table<K,E> &ht);
 
   void create(){};
-
   bool contains(const K& the_key) const;
-
   Linked_list<K> keys() const;
-
   Linked_list<E> values() const;
-
   int search(const K& ) const;
-
   mypair< K, E>* find(const K& ) const;
-
   void insert( mypair< K, E>& );
-
   void insert(const K&, const E&);
+  void resize(const size_t);
+  void print()const;
+
+  hash_table<K,E> &operator=(const hash_table<K,E>&);
+
+  template <class C, class G>
+  friend ostream& operator<< (ostream& os, const hash_table<C,G> &ht);
 
 private:
  mypair<K, E>** table;    // the hash table
@@ -115,6 +116,22 @@ hash_table<K,E>::hash_table(int the_divisor)
   table = new mypair<K, E>* [divisor];
   for (int i=0; i<divisor; i++)
     table[i] = nullptr;
+}
+
+template<class K, class E>
+hash_table<K,E>::hash_table(const hash_table<K,E> &ht){
+
+  dsize=0;
+  divisor=ht.divisor;
+
+  table = new mypair<K, E>* [divisor];
+
+  for (int i=0; i<ht.divisor; i++){
+    if(ht.table[i]!=NULL){
+      table[i]=new mypair<K,E> (*ht.table[i]);
+      dsize++;
+    }else table[i]=nullptr;
+  }
 }
 
 /* This method returns a bucket b in the table that satisfies exactly one of the following:
@@ -164,8 +181,6 @@ Linked_list<K> hash_table<K,E>::keys()const
 {
   Linked_list<K> kyz;
 
-  //cout<<"SIZE"<<kyz.size()<<endl;
-
   for (int i=0; i<divisor; i++){
 
     if (table[i]!=NULL){
@@ -175,9 +190,6 @@ Linked_list<K> hash_table<K,E>::keys()const
     }
 
   }
-
-  //cout<<"SIZE"<<kyz.size()<<endl;
-  //cout<<kyz<<endl;
 
   return kyz;
 
@@ -275,9 +287,7 @@ void hash_table<K,E>::insert(const K& key, const E& value){
       // duplicate, change table[b]->second
       table[b]->second = value;
     else throw "table is full";
-      // throw the exception hash_table_full();
   }
-
 
 }
 
@@ -302,6 +312,79 @@ void hash_table<K,E>::modify(const K& k, const E& e){
   }else{
     table[b]->second = e;
   }
+}
+
+template<class K, class E>
+void hash_table<K,E>::resize(const size_t newsize){
+
+  if (newsize!=divisor && newsize!=0 && newsize>=dsize){
+
+    static hash_table<K,E> newtable (newsize);
+
+    for (int i=0; i<divisor; i++) {
+      if (table[i]!=NULL) newtable.insert(*table[i]);
+    }
+
+    *this=newtable;
+
+  }else throw "can't resize";
+
+}
+
+template<class K, class E>
+hash_table<K,E>& hash_table<K,E>::operator=(const hash_table<K,E>& ht){
+
+  if (this==&ht){
+    return *this;
+  }else{
+    for (int i=0; i<divisor; i++){
+      delete table[i];
+    }
+    delete[] table;
+    table=nullptr;
+    dsize=0;
+    divisor=ht.divisor;
+
+    table = new mypair<K, E>* [divisor];
+    for (int i=0; i<divisor; i++) table[i] = nullptr;
+
+    for (int i=0; i<ht.divisor; i++)
+      if(ht.table[i]!=NULL){
+        table[i]=new mypair<K,E> (*ht.table[i]);
+        dsize++;
+      }
+  }
+}
+
+
+template<class K, class E>
+void hash_table<K,E>::print()const{
+
+  for(int i=0; i<divisor; i++){
+
+    cout<<i<<": [";
+    if(table[i]!=NULL){
+      cout<<table[i]->first<<","<<table[i]->second;
+    }
+    cout<<"]"<<endl;
+
+  }
+
+}
+
+template<class K, class E>
+ostream& operator<<(ostream& os, const hash_table<K,E> &ht){
+
+  for(int i=0; i<ht.divisor; i++){
+
+    os<<i<<": [";
+    if(ht.table[i]!=NULL){
+      os<<ht.table[i]->first<<","<<ht.table[i]->second;
+    }
+    os<<"]"<<endl;
+
+  }
+	return os;
 }
 
 #endif
