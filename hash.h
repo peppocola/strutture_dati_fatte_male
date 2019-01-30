@@ -354,6 +354,7 @@ hash_table<K,E>& hash_table<K,E>::operator=(const hash_table<K,E>& ht){
         dsize++;
       }
   }
+  return *this;
 }
 
 

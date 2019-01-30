@@ -19,7 +19,7 @@ public:
 
     testa=q.testa;
     lung=q.lung;
-    maxlung==q.maxlung;
+    maxlung=q.maxlung;
     elementi=new tipoelem[q.maxlung];
 
     for (int i=testa; i<lung; i++)
