@@ -18,6 +18,8 @@ public:
   int mode();
   double mean();
   void print();
+
+  friend ostream& operator<<(ostream& os, const histo& h);
 private:
   hash_table<int, int> hist;
 
@@ -99,6 +101,26 @@ void histo::print(){
 
       p=keys.next(p);
     }
+}
+
+ostream& operator<<(ostream& os, const histo& h){
+
+  Linked_list<int> keys=h.hist.keys();
+  Linked_list<int>::position p=keys.begin();
+
+  while (!keys.end(p)){
+
+    int key=keys.read(p);
+
+    os<<key<<" ";
+
+    string value(h.hist[key], '*');
+
+    os<<value<<endl;
+
+    p=keys.next(p);
+  }
+  return os;
 }
 
 #endif
