@@ -5,81 +5,166 @@
 using namespace std;
 
 template <class T>
-class Pila;
+class mystackpt;
 
 template <class T>
-class cella{
-  friend class Pila<T>;
+class cell{
+public:
+  friend class mystackpt<T>;
+  cell(){
+    prev=nullptr;
+  }
+  template <class K>
+  friend ostream& operator<<(ostream& os, const mystackpt<K>&);
+private:
   T value;
-  cella *prev;
+  cell *prev;
 };
 
-template <class Elemento>
-class Pila
+template <class T>
+class mystackpt
   {
   public:
-    typedef Elemento tipoelem;
-    Pila();
-    ~Pila();
-    void creaPila();
+    typedef T tipoelem;
+
+    mystackpt();
+    mystackpt(const mystackpt<T>&);
+    ~mystackpt();
+
+    void create();
     bool empty() const;
     tipoelem top() const;
     void pop();
     void push(tipoelem);
+
+    mystackpt<T>& operator=(const mystackpt<T>&);
+
+    template <class K>
+    friend ostream& operator<<(ostream& os, const mystackpt<K>&);
+
   private:
-    cella<Elemento>* head;
+    cell<T>* head;
   };
 
-template <class Elemento>
-Pila<Elemento>::Pila()
+template <class T>
+mystackpt<T>::mystackpt()
 {
   head = nullptr;
 }
 
+template <class T>
+mystackpt<T>::mystackpt(const mystackpt<T>& p){
 
-template <class Elemento>
-Pila<Elemento>::~Pila()
+  if(!p.empty()){
+    head->value=p.head->value;
+
+    cell<T>* tocpy=p.head->prev;
+    cell<T>* whcpy=head;
+
+    while(tocpy!=nullptr){
+      cell<T>*tmp=new cell<T>();
+      tmp->value=tocpy->value;
+      whcpy->prev=tmp;
+
+      tocpy=tocpy->prev;
+      whcpy=whcpy->prev;
+    }
+  }else throw "can't copy empty stack";
+}
+
+
+template <class T>
+mystackpt<T>::~mystackpt()
 {
   while (!empty())
     pop();
 };
 
-template <class Elemento>
-void Pila<Elemento>::creaPila()
+template <class T>
+void mystackpt<T>::create()
 {
   head=nullptr;
 }
 
-template <class Elemento>
-bool Pila<Elemento>::empty() const
+template <class T>
+bool mystackpt<T>::empty() const
   {
     return head==nullptr;
   }
 
-template <class Elemento>
-Elemento Pila<Elemento>::top() const
+template <class T>
+T mystackpt<T>::top() const
   {
     return head->value;
   }
 
-template <class Elemento>
-void Pila<Elemento>::pop()
+template <class T>
+void mystackpt<T>::pop()
 {
   if (!empty())
     {
-      cella<Elemento> *tmp = head;
+      cell<T> *tmp = head;
       head = head->prev;
       delete tmp;
     }
 }
 
-template <class Elemento>
-void Pila<Elemento>::push(tipoelem el)
+template <class T>
+void mystackpt<T>::push(tipoelem el)
 {
-  cella<Elemento> *tmp = new cella<Elemento>();
+  cell<T> *tmp = new cell<T>();
   tmp->value = el;
   tmp->prev = head;
   head = tmp;
+}
+
+template <class T>
+mystackpt<T>& mystackpt<T>::operator=(const mystackpt<T>&p){
+
+    if(this==&p) return *this;
+
+    if(!p.empty()){
+
+      while (!empty())
+        pop();
+
+      head=new cell<T>();
+      head->value=p.head->value;
+
+      cell<T>* tocpy=p.head->prev;
+      cell<T>* whcpy=head;
+
+      while(tocpy!=nullptr){
+
+        cell<T>*tmp=new cell<T>();
+        tmp->value=tocpy->value;
+
+        whcpy->prev=tmp;
+
+        tocpy=tocpy->prev;
+        whcpy=whcpy->prev;
+
+      }
+
+    }else throw "can't copy empty stack";
+
+    return *this;
+}
+
+template <class K>
+ostream& operator<<(ostream& os, const mystackpt<K>&p){
+
+  os<<"TOP[";
+
+  cell<K>* tmp=p.head;
+
+  while(tmp->prev!=nullptr) {
+    os<<tmp->value<<"|";
+    tmp=tmp->prev;
+  }
+  os<<tmp->value<<"]BOT"<<endl;
+
+  return os;
 }
 
 #endif // _PILAVT_H
