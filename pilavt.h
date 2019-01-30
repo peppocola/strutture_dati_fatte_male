@@ -1,76 +1,102 @@
 #ifndef PILAVT_H
 #define PILAVT_H
+#define DEFAULTSIZE 100
 
 #include <iostream>
 
 using namespace std;
 
 
-template <class Elemento>
-class Pila
+template <class T>
+class mystack
   {
   public:
-    typedef Elemento tipoelem;
-    Pila();
-    Pila(int);
-    ~Pila();
-    void creaPila();
-    bool pilaVuota() const;
-    tipoelem leggiPila() const;
-    void fuoriPila();
-    void inPila(tipoelem);
+    typedef T tipoelem;
+    mystack();
+    mystack(int);
+    mystack(const mystack<T>& s);
+    ~mystack();
+    void create();
+    bool empty() const;
+    tipoelem top() const;
+    void pop();
+    void push(tipoelem);
+
+    mystack<T>& operator=(const mystack<T>& s);
+
+    template <class K>
+    friend ostream& operator<<(ostream& os, const mystack<K>&s);
+
   private:
-    tipoelem *elementi;
-    int MAXLUNGH;
-    int testa;
+    tipoelem *elems;
+    int MAXLENGTH;
+    int head;
   };
 
-template <class Elemento>
-Pila<Elemento>::Pila()
+template <class T>
+mystack<T>::mystack()
 {
-  elementi = new tipoelem[100]; // dimensione standard della pila
-  MAXLUNGH = 100;
-  creaPila();
+  elems = new tipoelem[DEFAULTSIZE]; // dimensione standard della pila
+  MAXLENGTH = DEFAULTSIZE;
+  create();
 }
 
-template <class Elemento>
-Pila<Elemento>::Pila(int N)
+template <class T>
+mystack<T>::mystack(int N)
 {
-  elementi = new tipoelem[N]; // dimensione N della pila
-  MAXLUNGH = N;
-  creaPila();
+  if (N>0){
+    elems = new tipoelem[N]; // dimensione N della pila
+    MAXLENGTH = N;
+    create();
+  }else{
+    elems = new tipoelem[DEFAULTSIZE];
+    MAXLENGTH = DEFAULTSIZE;
+    create();
+  }
 }
 
-template <class Elemento>
-Pila<Elemento>::~Pila()
+template <class T>
+mystack<T>::mystack(const mystack<T>& s){
+
+  MAXLENGTH=s.MAXLENGTH;
+  head=s.head;
+  elems=new tipoelem[MAXLENGTH];
+  for(int i=0; i<head; i++){
+    elems[i]=s.elems[i];
+  }
+
+}
+
+template <class T>
+mystack<T>::~mystack()
 {
-  delete[] elementi;
+  delete[] elems;
 };
 
-template <class Elemento>
-void Pila<Elemento>::creaPila()
+template <class T>
+void mystack<T>::create()
 {
-  testa=0;
+  head=0;
 }
 
-template <class Elemento>
-bool Pila<Elemento>::pilaVuota() const
+template <class T>
+bool mystack<T>::empty() const
   {
-    return testa==0;
+    return head==0;
   }
 
-template <class Elemento>
-Elemento Pila<Elemento>::leggiPila() const
+template <class T>
+T mystack<T>::top() const
   {
-    return elementi[testa-1];
+    return elems[head-1];
   }
 
-template <class Elemento>
-void Pila<Elemento>::fuoriPila()
+template <class T>
+void mystack<T>::pop()
 {
-  if (!pilaVuota())
+  if (!empty())
     {
-      testa-=1;
+      head-=1;
     }
   else
     {
@@ -78,18 +104,53 @@ void Pila<Elemento>::fuoriPila()
     }
 }
 
-template <class Elemento>
-void Pila<Elemento>::inPila(tipoelem el)
+template <class T>
+void mystack<T>::push(tipoelem el)
 {
-  if (testa==MAXLUNGH)
+  if (head==MAXLENGTH)
     {
       cout<<"raggiunta capacità massima della pila"<<endl;
     }
   else
     {
-      elementi[testa]=el;
-      testa++;
+      elems[head]=el;
+      head++;
     }
 }
+
+template <class T>
+mystack<T>& mystack<T>::operator=(const mystack<T>& s){
+
+  if (this==&s) return *this;
+
+  if(MAXLENGTH!=s.MAXLENGTH){
+    delete[]elems;
+    MAXLENGTH=s.MAXLENGTH;
+  }
+  elems=new tipoelem[MAXLENGTH];
+  head=s.head;
+  for(int i=0; i<head; i++){
+    elems[i]=s.elems[i];
+  }
+
+  return *this;
+
+}
+
+template<class K>
+ostream& operator<<(ostream& os, const mystack<K>&s){
+
+  os<<"BOT[";
+  int i=0;
+  while(i<s.head-1){
+    os<<s.elems[i]<<"|";
+    i++;
+  }
+  os<<s.elems[i];
+  os<<"]TOP"<<endl;
+
+  return os;
+}
+
 
 #endif // _PILAVT_H
