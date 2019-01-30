@@ -2,19 +2,28 @@
 #define _PRIORITYQUEUE_H_
 #include <iostream>
 
+using namespace std;
+
 template < class T > class PQueue {
 
 public:
   typedef T _value_type;
   PQueue ();
   PQueue (int);
+  PQueue (PQueue<T>&);
   ~PQueue ();
 
-  void createPQueue ();
-  void insert (_value_type);
-  _value_type min ();
-  void deleteMin ();
+  void create ();
+  void push (_value_type);
+  _value_type top ();
+  void pop ();
+  bool empty();
   void printpq();
+
+  PQueue<T>& operator=(const PQueue<T>& q);
+
+  template <class K>
+  friend ostream& operator<<(ostream &os, const PQueue<K>& q);
 
 private:
   int MAXLENGTH;
@@ -29,13 +38,26 @@ private:
 template < class T >
 PQueue < T >::PQueue ():MAXLENGTH (100) {
   heap = new _value_type[MAXLENGTH];
-  createPQueue ();
+  create ();
 }
 
 template < class T >
 PQueue < T >::PQueue (int maxN): MAXLENGTH (maxN) {
   heap = new _value_type[MAXLENGTH];
-  createPQueue ();
+  create ();
+}
+
+template < class T >
+PQueue < T >::PQueue (PQueue<T>& pq){
+
+  MAXLENGTH=pq.MAXLENGTH;
+  heap=new _value_type[MAXLENGTH];
+  last=pq.last;
+
+  for(int i=0; i<last; i++){
+    heap[i]=pq.heap[i];
+  }
+
 }
 
 template < class T >
@@ -44,12 +66,12 @@ PQueue < T >::~PQueue () {
 }
 
 template < class T >
-void PQueue < T >::createPQueue () {
+void PQueue < T >::create () {
   last = 0;
 }
 
 template < class T >
-void PQueue < T >::insert (_value_type e) {
+void PQueue < T >::push (_value_type e) {
   if(last < MAXLENGTH){
     heap[++last - 1] = e;
     fixUp ();
@@ -57,14 +79,14 @@ void PQueue < T >::insert (_value_type e) {
 }
 
 template < class T > typename
-PQueue < T >::_value_type PQueue < T >::min () {
+PQueue < T >::_value_type PQueue < T >::top () {
   if(last != 0){
     return (heap[0]);
   }else throw "the queue is empty perdindirindina";
 }
 
 template < class T >
-void PQueue < T >::deleteMin () {
+void PQueue < T >::pop () {
 
   if(last != 0){
     heap[0] = heap[last - 1];
@@ -118,14 +140,52 @@ template < class T > void PQueue < T >::fixDown (int k, int N) {
   }
 }
 
-template < class T > void PQueue < T >::printpq(){
-
-  std::cout<<"|";
-  for(int i=0; i<last; i++){
-    std::cout<<heap[i]<<"|";
-  }
-  std::cout<<std::endl;
+template < class T >
+bool PQueue<T>::empty(){
+  return last==0;
 }
 
+template < class T > void PQueue < T >::printpq(){
+
+  cout<<"|";
+  for(int i=0; i<last; i++){
+    cout<<heap[i]<<"|";
+  }
+  cout<<endl;
+}
+
+template < class T >
+PQueue<T>& PQueue < T >::operator=(const PQueue<T>& q){
+
+  if(this==&q){
+    return *this;
+  }
+  if(MAXLENGTH!=q.MAXLENGTH){
+    delete[]heap;
+    MAXLENGTH=q.MAXLENGTH;
+    heap=new _value_type[MAXLENGTH];
+  }
+  last=q.last;
+
+  for(int i=0; i<last; i++){
+    heap[i]=q.heap[i];
+  }
+
+  return *this;
+
+}
+
+template <class K>
+ostream& operator<<(ostream& os, const PQueue<K>& q){
+
+  os<<"|";
+  for(int i=0; i<q.last; i++){
+    os<<q.heap[i]<<"|";
+  }
+  os<<endl;
+
+  return os;
+
+}
 
 #endif /* _PRIORITYQUEUE_H_ */

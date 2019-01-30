@@ -11,7 +11,7 @@ class queue {
 public:
 
   queue(int n);
-  queue(queue<tipoelem> &q);
+  queue(const queue<tipoelem> &q);
   queue();
   ~queue();
 
@@ -38,7 +38,7 @@ queue<tipoelem>::queue(int n){
 }
 
 template < class tipoelem >
-queue<tipoelem>::queue(queue<tipoelem> &q){
+queue<tipoelem>::queue(const queue<tipoelem> &q){
 
   head=q.head;
   length=q.length;
