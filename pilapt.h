@@ -56,14 +56,17 @@ template <class T>
 mystackpt<T>::mystackpt(const mystackpt<T>& p){
 
   if(!p.empty()){
+    head=new cell<T>();
     head->value=p.head->value;
 
     cell<T>* tocpy=p.head->prev;
     cell<T>* whcpy=head;
 
     while(tocpy!=nullptr){
+
       cell<T>*tmp=new cell<T>();
       tmp->value=tocpy->value;
+
       whcpy->prev=tmp;
 
       tocpy=tocpy->prev;
