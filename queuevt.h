@@ -6,102 +6,129 @@
 using namespace std;
 
 template < class tipoelem >
-class Coda {
+class queue {
 
 public:
 
-  Coda(int n){
-    maxlung = n;
-    creaCoda();
-  }
+  queue(int n);
+  queue(queue<tipoelem> &q);
+  queue();
+  ~queue();
 
-  Coda(Coda<tipoelem> &q){
+  void create();
+  bool empty();
+  tipoelem top();
+  void pop();
+  void push(tipoelem a);
 
-    testa=q.testa;
-    lung=q.lung;
-    maxlung=q.maxlung;
-    elementi=new tipoelem[q.maxlung];
-
-    for (int i=testa; i<lung; i++)
-      elementi[i]=q.elementi[i];
-
-  }
-
-  Coda(){
-    maxlung = DEFAULTSIZE;
-    creaCoda();
-  }
-
-  ~Coda(){delete[] elementi;}
-
-  void creaCoda(){
-    elementi = new tipoelem[maxlung];
-    testa = 0;
-    lung = 0;
-  }
-
-  bool codaVuota(){
-    return (lung == 0);
-  }
-
-  tipoelem leggiCoda(){
-    if (!codaVuota())
-      return (elementi[testa]);
-  }
-
-  void fuoriCoda(){
-    if (!codaVuota()){
-      testa = (testa + 1) % maxlung;
-      lung--;
-    }
-  }
-
-  void inCoda(tipoelem a){
-    if (lung != maxlung){
-      elementi[(testa+lung) % maxlung] = a;
-      lung++;
-    }
-  }
-
-  Coda<tipoelem>& operator=(const Coda<tipoelem>& q){
-
-    testa=q.testa;
-    lung=q.lung;
-
-    if(maxlung!=q.maxlung){
-      delete[]elementi;
-      elementi=new tipoelem[q.maxlung];
-      maxlung=q.maxlung;
-    }
-
-    for (int i=testa; i<lung; i++)
-      elementi[i]=q.elementi[i];
-
-  }
+  queue<tipoelem>& operator=(const queue<tipoelem>& q);
 
   template<class tp>
-  friend ostream& operator<<(ostream&, const Coda<tp>&);
+  friend ostream& operator<<(ostream&, const queue<tp>&);
 
  private:
-  tipoelem *elementi;
-  int testa, lung, maxlung;
+  tipoelem *elems;
+  int head, length, maxlength;
 };
 
+template < class tipoelem >
+queue<tipoelem>::queue(int n){
+  maxlength = n;
+  create();
+}
+
+template < class tipoelem >
+queue<tipoelem>::queue(queue<tipoelem> &q){
+
+  head=q.head;
+  length=q.length;
+  maxlength=q.maxlength;
+  elems=new tipoelem[q.maxlength];
+
+  for (int i=head; i<length; i++)
+    elems[i]=q.elems[i];
+
+}
+
+template < class tipoelem >
+queue<tipoelem>::queue(){
+  maxlength = DEFAULTSIZE;
+  create();
+}
+
+template < class tipoelem >
+queue<tipoelem>::~queue(){delete[] elems;}
+
+template < class tipoelem >
+void queue<tipoelem>::create(){
+  elems = new tipoelem[maxlength];
+  head = 0;
+  length = 0;
+}
+
+template < class tipoelem >
+bool queue<tipoelem>::empty(){
+  return (length == 0);
+}
+
+template < class tipoelem >
+tipoelem queue<tipoelem>::top(){
+  if (!empty())
+    return (elems[head]);
+}
+
+template < class tipoelem >
+void queue<tipoelem>::pop(){
+  if (!empty()){
+    head = (head + 1) % maxlength;
+    length--;
+  }
+}
+
+template < class tipoelem >
+void queue<tipoelem>::push(tipoelem a){
+  if (length != maxlength){
+    elems[(head+length) % maxlength] = a;
+    length++;
+  }
+}
+
+template < class tipoelem >
+queue<tipoelem>& queue<tipoelem>::operator=(const queue<tipoelem>& q){
+
+  if(this==&q) return *this;
+
+  head=q.head;
+  length=q.length;
+
+  if(maxlength!=q.maxlength){
+    delete[]elems;
+    elems=new tipoelem[q.maxlength];
+    maxlength=q.maxlength;
+  }
+
+  for (int i=head; i<length; i++)
+    elems[i]=q.elems[i];
+
+  return *this;
+
+}
+
 template<class tp>
-ostream& operator<<(ostream& os, const Coda<tp>& q){
+ostream& operator<<(ostream& os, const queue<tp>& q){
 
   os<<"[";
 
-  int i=q.testa;
-  while(i<q.lung-1){
+  int i=q.head;
+  while(i<q.length-1){
 
-    os<<q.elementi[i]<<", ";
+    os<<q.elems[i]<<", ";
 
     i++;
   }
 
-  os<<q.elementi[i];
-  os<<"]";
+  os<<q.elems[i];
+  os<<"]"<<endl;
 
   return os;
 }
