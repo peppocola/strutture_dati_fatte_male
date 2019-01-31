@@ -2,6 +2,9 @@
 #define _LINKED_ORD_LIST_H
 
 #include "linked_list.h"
+#include <iostream>
+
+using namespace std;
 
 template<class T>
 class Linked_ord_list : public Linked_list<T>{
@@ -10,45 +13,34 @@ public:
   typedef typename Linear_list<T, List_node<T>*>::position position;
   Linked_ord_list(); //di default crescente
   Linked_ord_list(bool);
-  ~Linked_ord_list();
+  Linked_ord_list(const Linked_ord_list<T>& l);
   bool getCrescente()const;
   void setCrescente(bool x); //solo se empty()==true
   void write(const value_type&); //trova la posizione giusta e inserisce
-  bool is_in(const T);
+  bool is_in(const T)const;
   void merge(const Linked_ord_list<T>&);
   void merge2(const Linked_ord_list<T>&);
 
+  Linked_ord_list<T>& operator=(const Linked_ord_list<T>& l);
+
 private:
   void insert(const value_type&, position);
-  int length;
-  List_node<T> * _pHead;
   bool crescente;
 };
 
 template <class T>
-Linked_ord_list<T>::Linked_ord_list(){
-  _pHead=new List_node<T>;
-  _pHead->_pPrev=_pHead;
-  _pHead->_pNext=_pHead;
-  length=0;
+Linked_ord_list<T>::Linked_ord_list():Linked_list<T>::Linked_list(){
   crescente=true;
 }
 
 template <class T>
-Linked_ord_list<T>::Linked_ord_list(bool x){
+Linked_ord_list<T>::Linked_ord_list(bool x):Linked_list<T>::Linked_list(){
   crescente=x;
-  _pHead=new List_node<T>;
-  _pHead->_pPrev=_pHead;
-  _pHead->_pNext=_pHead;
-  length=0;
 }
 
 template <class T>
-Linked_ord_list< T >::~Linked_ord_list(){
-	while(!this->Linked_list<T>::empty()){
-		this->Linked_list<T>::erase(this->Linked_list<T>::begin());
-	}
-	delete _pHead;
+Linked_ord_list< T >::Linked_ord_list(const Linked_ord_list<T>& l):Linked_list<T>::Linked_list(l){
+  crescente=l.crescente;
 }
 
 template <class T>
@@ -109,7 +101,7 @@ void Linked_ord_list<T>::insert(const value_type& newvalue, position p){
     t->_pPrev = p->_pPrev;
     p->_pPrev->_pNext = t;
     p->_pPrev = t;
-	  length++;
+	  Linked_list<T>::length++;
 }
 
 template <class T>
@@ -121,7 +113,7 @@ void Linked_ord_list<T>::merge(const Linked_ord_list<T>& L){
   while(!L.Linked_list<T>::end(p)){
     write(p->value);
     p=p->_pNext;
-    length++;
+    Linked_list<T>::length++;
 
   }
 
@@ -142,7 +134,7 @@ void Linked_ord_list<T>::merge2(const Linked_ord_list<T>& L){
 
           this->insert(p2->value, p1);
           p2=p2->_pNext;
-          length++;
+          Linked_list<T>::length++;
 
         }else{
 
@@ -156,14 +148,14 @@ void Linked_ord_list<T>::merge2(const Linked_ord_list<T>& L){
 
         this->insert(p2->value, p1);
         p2=p2->_pNext;
-        length++;
+        Linked_list<T>::length++;
 
       }
 
     }else{
 
       position p1=this->Linked_list<T>::begin();
-      position p2=L.Linked_list<T>::begin();
+      position p2=this->L.Linked_list<T>::begin();
 
       while (!this->Linked_list<T>::end(p1) && !L.Linked_list<T>::end(p2)){
 
@@ -171,7 +163,7 @@ void Linked_ord_list<T>::merge2(const Linked_ord_list<T>& L){
 
           this->insert(p2->value, p1);
           p2=p2->_pNext;
-          length++;
+          Linked_list<T>::length++;
 
         }else{
 
@@ -184,7 +176,7 @@ void Linked_ord_list<T>::merge2(const Linked_ord_list<T>& L){
       while(!L.Linked_list<T>::end(p2)){
         this->insert(p2->value, p1);
         p2=p2->_pNext;
-        length++;
+        Linked_list<T>::length++;
 
       }
 
@@ -194,11 +186,34 @@ void Linked_ord_list<T>::merge2(const Linked_ord_list<T>& L){
 
 }
 template <class T>
-bool Linked_ord_list<T>::is_in(const T v){
-
+bool Linked_ord_list<T>::is_in(const T v)const{
   if (Linked_list<T>::search(v)!=nullptr)
     return true;
   return false;
+}
+
+template <class T>
+Linked_ord_list<T>& Linked_ord_list<T>::operator=(const Linked_ord_list<T>& l){
+
+  if(this==&l) return *this;
+
+  if(!this->empty()) this->clear();
+
+  Linked_list<T>::_pHead=new List_node<T>;
+  Linked_list<T>::_pHead->_pPrev=Linked_list<T>::_pHead;
+  Linked_list<T>::_pHead->_pNext=Linked_list<T>::_pHead;
+
+  Linked_list<T>::length=0;
+  crescente=l.crescente;
+
+  position p=l.begin();
+
+  while(!l.end(p)){
+    this->pushback(l.read(p));
+    p=l.next(p);
+  }
+
+  return *this;
 }
 
 #endif //_LINKED_ORD_LIST_H
