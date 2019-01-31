@@ -141,12 +141,14 @@ template<class K>
 ostream& operator<<(ostream& os, const mystack<K>&s){
 
   os<<"BOT[";
-  int i=0;
-  while(i<s.head-1){
-    os<<s.elems[i]<<"|";
-    i++;
+  if(!s.empty()){
+    int i=0;
+    while(i<s.head-1){
+      os<<s.elems[i]<<"|";
+      i++;
+    }
+    os<<s.elems[i];
   }
-  os<<s.elems[i];
   os<<"]TOP"<<endl;
 
   return os;

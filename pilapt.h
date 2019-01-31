@@ -159,13 +159,17 @@ ostream& operator<<(ostream& os, const mystackpt<K>&p){
 
   os<<"TOP[";
 
-  cell<K>* tmp=p.head;
+  if(!p.empty()){
+    cell<K>* tmp=p.head;
 
-  while(tmp->prev!=nullptr) {
-    os<<tmp->value<<"|";
-    tmp=tmp->prev;
+    while(tmp->prev!=nullptr) {
+      os<<tmp->value<<"|";
+      tmp=tmp->prev;
+    }
+    os<<tmp->value;
   }
-  os<<tmp->value<<"]BOT"<<endl;
+  
+  os<<"]BOT"<<endl;
 
   return os;
 }

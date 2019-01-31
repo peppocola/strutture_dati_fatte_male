@@ -119,15 +119,17 @@ ostream& operator<<(ostream& os, const queue<tp>& q){
 
   os<<"[";
 
-  int i=q.head;
-  while(i<q.length-1){
+  if(!q.empty()){
+    int i=q.head;
+    while(i<q.length-1){
 
-    os<<q.elems[i]<<", ";
+      os<<q.elems[i]<<", ";
 
-    i++;
+      i++;
+    }
+
+    os<<q.elems[i];
   }
-
-  os<<q.elems[i];
   os<<"]"<<endl;
 
   return os;
