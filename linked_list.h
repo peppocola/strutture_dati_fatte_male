@@ -30,7 +30,7 @@ public:
 	Linked_list(); //costruttore generico;
 	Linked_list(int); //costruttore con lunghezza in input;
 	Linked_list(const Linked_list<T>&); //costruttore di copia;
-	~Linked_list(); //distruttore;
+	virtual~Linked_list(); //distruttore;
 
 	virtual void create(); //crealista;
 	virtual void clear();  //cancellalista;
@@ -52,7 +52,7 @@ public:
 	Linked_list<T>& operator=(const Linked_list<T>&);
 	bool operator==(const Linked_list<T>&) const;
 
-private:
+protected:
 	List_node<T>* _pHead;
 	int length;
 
@@ -77,12 +77,11 @@ Linked_list<T>::Linked_list(int l){
 		_pHead->_pNext=_pHead;
 
 	}else{
-		int i;
 		position p;
 
 		p=_pHead;
 
-		for(i=0; i<l; i++){
+		for(int i=0; i<l; i++){
 
 			p->_pNext=new List_node<T>;
 			p->_pNext->_pPrev=p;
@@ -100,30 +99,19 @@ Linked_list<T>::Linked_list(int l){
 }
 
 template <class T>
-Linked_list<T>::Linked_list(const Linked_list<T>& L){
+Linked_list<T>::Linked_list(const Linked_list<T>& l){
 
 	_pHead=new List_node<T>;
+	_pHead->_pPrev=_pHead;
+	_pHead->_pNext=_pHead;
 
-	length=L.length;
+	length=0;
 
-	if(L.empty()){
+	position p=l.begin();
 
-		_pHead->_pPrev=_pHead;
-		_pHead->_pNext=_pHead;
-
-	}else{
-
-		position p;
-
-		p=L.last();
-
-		for (int i=0; i<L.length; i++){
-
-				insert(read(p), begin());
-				p=L.previous(p);
-
-		}
-
+	while(!l.end(p)){
+		this->pushback(l.read(p));
+		p=l.next(p);
 	}
 
 }
@@ -241,36 +229,35 @@ void Linked_list< T >::erase(position p)const{
 
 
 template<class T>
-Linked_list<T>& Linked_list<T>::operator=(const Linked_list<T>& L){
-	if (this != &L){
+Linked_list<T>& Linked_list<T>::operator=(const Linked_list<T>& l){
 
-		_pHead = new List_node<T>;
-		_pHead->_pNext = _pHead;
-		_pHead->_pPrev = _pHead;
+	if(this==&l) return *this;
 
+	if(!this->empty()) this->clear();
 
-		if (!L.empty()){
-            position p = L.last();
-			for (int i=0; i < L.size(); i++){
-				insert(L.read(p), begin());
-				p = L.previous(p);
-			}
-		}
+	_pHead=new List_node<T>;
+	_pHead->_pPrev=_pHead;
+	_pHead->_pNext=_pHead;
+
+	length=0;
+
+	position p=l.begin();
+
+	while(!l.end(p)){
+		this->pushback(l.read(p));
+		p=l.next(p);
 	}
 	return *this;
 }
 
-
 template<class T>
 bool Linked_list<T>::operator==(const Linked_list<T> &L) const{
-	if (L.size() != length)
-		return false;
+	if (L.size() != length)	return false;
 	position p, pL;
 	p = begin();
 	pL = L.begin();
 	while (!end(p)){
-		if (p->value != pL->value)
-			return false;
+		if (p->value != pL->value) return false;
 		p = p->_pNext;
 		pL = pL->_pNext;
 	}
@@ -287,7 +274,6 @@ typename Linked_list<T>::position Linked_list<T>::search(const value_type& v)con
 			return p;
 		p=next(p);
 	}
-	throw "not found"	;
 	return nullptr;
 
 }
