@@ -6,138 +6,42 @@
 using namespace std;
 
 template <class T>
-class deque;
+class dequept;
 
 template <class T>
 class node{
-  friend class deque<T>;
+public:
+  friend class dequept<T>;
+  template<class tp>
+  friend ostream& operator<<(ostream&, const dequept<tp>&);
+  node(){
+    next=nullptr;
+    prev=nullptr;
+  }
+private:
   node *next;
   node *prev;
   T value;
 };
 
 template <class T>
-class deque{
+class dequept{
 public:
-  deque(){
-    head = nullptr;
-    tail = nullptr;
-    s = 0;
-  }
+  dequept();
+  dequept(const dequept<T>& dq);
+  ~dequept();
+  bool empty()const;
+  int size()const;
+  void push_front(T v);
+  void push_back(T v);
+  void pop_front();
+  void pop_back();
+  T top()const;
+  T bot()const;
 
-  ~deque(){
-    while(!empty()){
-      pop_front();
-    }
-  }
-  bool empty(){
-    return (head == nullptr);
-  }
-
-  int size(){ return s;}
-
-  void push_front(T v){
-    node<T> *tmp = new node<T>;
-
-    tmp->value = v;
-    tmp->prev = nullptr;
-    tmp->next = head;
-
-    if (empty()){
-      head = tail = tmp;
-
-    }else{
-
-      head->prev = tmp;
-      head = tmp;
-
-    }
-
-    s++;
-
-  }
-
-  void push_back(T v){
-    node<T> *tmp = new node<T>;
-
-    tmp->value = v;
-    tmp->prev = tail;
-    tmp->next = nullptr;
-
-    if (empty()){
-
-      head = tail = tmp;
-
-    }else{
-
-      tail->next = tmp;
-      tail = tmp;
-
-    }
-
-    s++;
-
-  }
-
-  void pop_front(){
-
-    if (size()==1){
-
-      s--;
-      delete head;
-      head=nullptr;
-
-    }else if (!empty()){
-
-      node<T> *tmp = head;
-      head->next->prev=nullptr;
-      head = head->next;
-      delete tmp;
-      s--;
-
-    }
-  }
-
-  void pop_back(){
-
-    if (size()==1){
-
-      s--;
-      delete tail;
-      tail=nullptr;
-
-    }else if (!empty()){
-
-      node<T> *tmp = tail;
-      tail->prev->next=nullptr;
-      tail = tail->prev;
-      delete tmp;
-      s--;
-
-    }
-  }
-
-  T top(){return head->value;}
-
-  T bot(){return tail->value;}
-
-  void printCoda (){
-    int i;
-    i=0;
-    while (i<size()){
-
-      cout<<i+1<<"->"<<top()<<endl;
-      push_back(top());
-      pop_front();
-
-      i++;
-
-
-    }
-
-
-
-  }
+  dequept<T> operator=(const dequept<T>&);
+  template<class tp>
+  friend ostream& operator<<(ostream&, const dequept<tp>&);
 
 private:
   node <T>* head;
@@ -145,5 +49,146 @@ private:
   int s;
 };
 
+template <class T>
+dequept<T>::dequept(){
+  head = nullptr;
+  tail = nullptr;
+  s = 0;
+}
 
+template <class T>
+dequept<T>::dequept(const dequept<T>& dq){
+
+    s = 0;
+    head = nullptr;
+    tail = nullptr;
+    node<T>*tmp=dq.head;
+
+    while(tmp!=nullptr){
+      push_back(tmp->value);
+      tmp=tmp->next;
+    }
+
+
+}
+
+template <class T>
+dequept<T>::~dequept(){
+  while(!empty()){
+    pop_front();
+  }
+}
+
+template <class T>
+bool dequept<T>::empty()const{
+  return (head == nullptr);
+}
+
+template <class T>
+int dequept<T>::size()const{ return s;}
+
+template <class T>
+void dequept<T>::push_front(T v){
+
+  node<T> *tmp = new node<T>;
+  tmp->value = v;
+
+  if (empty()){
+    head = tail = tmp;
+  }else{
+    head->prev = tmp;
+    tmp->next = head;
+    head = tmp;
+  }
+  s++;
+}
+
+template <class T>
+void dequept<T>::push_back(T v){
+
+  node<T> *tmp = new node<T>;
+  tmp->value = v;
+
+  if (empty()){
+    head = tail = tmp;
+  }else{
+    tail->next = tmp;
+    tmp->prev = tail;
+    tail = tmp;
+  }
+  s++;
+}
+
+template <class T>
+void dequept<T>::pop_front(){
+
+  if (size()==1){
+    s--;
+    delete head;
+    head=nullptr;
+    tail=nullptr;
+  }else if (!empty()){
+    node<T> *tmp = head;
+    head->next->prev=nullptr;
+    head = head->next;
+    delete tmp;
+    s--;
+  }
+}
+
+template <class T>
+void dequept<T>::pop_back(){
+
+  if (size()==1){
+    s--;
+    delete tail;
+    head=nullptr;
+    tail=nullptr;
+  }else if (!empty()){
+    node<T> *tmp = tail;
+    tail->prev->next=nullptr;
+    tail = tail->prev;
+    delete tmp;
+    s--;
+  }
+}
+
+template <class T>
+T dequept<T>::top()const{return head->value;}
+
+template <class T>
+T dequept<T>::bot()const{return tail->value;}
+
+template <class T>
+dequept<T> dequept<T>::operator=(const dequept<T>& dp){
+
+    if (this==&dp) return *this;
+    while(!empty()) pop_back();
+
+    node<T>*tmp=dp.head;
+
+    while(tmp!=nullptr){
+      push_back(tmp->value);
+      tmp=tmp->next;
+    }
+
+    return *this;
+}
+
+template<class tp>
+ostream& operator<<(ostream&os, const dequept<tp>&q){
+
+  os<<"[ ";
+  if (!q.empty()){
+    node<tp>* tmp = q.head;
+
+    while(tmp->next!=nullptr){
+      os<<tmp->value<<", ";
+      tmp=tmp->next;
+    }
+    os<<tmp->value;
+  }
+  os<<"]"<<endl;
+  return os;
+}
 #endif
