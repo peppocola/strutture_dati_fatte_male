@@ -42,50 +42,52 @@ class bintree {
     virtual int depth(Nodo);
     virtual int width(Nodo);
 
-    virtual void print() const;
-
     int kSubtree(const Nodo, const int)const;
     int sumSubtree(const Nodo)const;
     int maxSumSubtree(const Nodo n)const;
+
+    template<class G, class S>
+    friend ostream& operator<<(ostream& out, const bintree<G, S>& t);
 
 
 private:
     virtual int _width(Nodo, int);
     virtual int _depth(Nodo, int);
-    virtual void printSubTree(const Nodo) const;
+    virtual void printSubTree(ostream&, const Nodo) const;
+    virtual void print(ostream&) const;
 
 
   };
 
 template <class T, class N>
-void bintree<T,N>::print() const{
+void bintree<T,N>::print(ostream& os)const{
 	if (!empty())
-		printSubTree(root());
+		printSubTree(os, root());
 	else
-		cout << "[]" << endl;
-	cout << endl;
+		os << "[]" << endl;
+	os << endl;
 }
 
 template <class T, class N>
-void bintree<T,N>::printSubTree(const Nodo n) const{
+void bintree<T,N>::printSubTree(ostream& os, const Nodo n) const{
   if (sx_empty(n) && dx_empty(n)){
-    cout << "[" << read(n) << "]";
+    os << "[" << read(n) << "]";
     return;
   }
-  cout << "[" << read(n) << ",";
+  os << "[" << read(n) << ",";
 	if (!sx_empty(n))
-		printSubTree(sx(n));
-	else cout << "[sxNIL]";
-	cout << ",";
+		printSubTree(os, sx(n));
+	else os << "[sxNIL]";
+	os << ",";
 	if (!dx_empty(n))
-		printSubTree(dx(n));
-	else cout << "[dxNIL]";
-	cout << "]";
+		printSubTree(os, dx(n));
+	else os << "[dxNIL]";
+	os << "]";
 }
 
-template<class T, class N>
-ostream& operator<<(ostream& out, const bintree<T, N>& t) {
-    t.print();
+template<class G, class S>
+ostream& operator<<(ostream& out, const bintree<G, S>& t) {
+    t.print(out);
     return out;
 }
 
