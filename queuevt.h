@@ -1,7 +1,7 @@
 #ifndef _QUEUEVT_H
 #define _QUEUEVT_H
 #include <iostream>
-#define DEFAULTSIZE 10;
+#define STANDARDSIZE 10;
 
 using namespace std;
 
@@ -52,7 +52,7 @@ queue<tipoelem>::queue(const queue<tipoelem> &q){
 
 template < class tipoelem >
 queue<tipoelem>::queue(){
-  maxlength = DEFAULTSIZE;
+  maxlength = STANDARDSIZE;
   create();
 }
 

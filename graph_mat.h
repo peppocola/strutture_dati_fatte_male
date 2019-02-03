@@ -3,6 +3,7 @@
 #define DEFAULTSIZE 10
 
 #include "graph.h"
+#include "hash.h"
 
 template<class P>
 class InfoArco {
@@ -43,7 +44,7 @@ class NodoG{
 	}
 	NodoG(){
 	}
-	int getId(){ return nodoId; }
+	int getId()const{ return nodoId; }
 	void setId(int id) {nodoId = id;}
   friend ostream& operator<<(ostream&, const NodoG&);
   bool operator==(const NodoG& g){
@@ -52,6 +53,16 @@ class NodoG{
   }
  private:
 	int nodoId;
+};
+
+template<>
+class hash<NodoG>
+{
+public:
+	size_t operator()(const NodoG n) const
+	{
+		return (size_t)n.getId();
+	}
 };
 
 ostream& operator<<(ostream& os, const NodoG& n){

@@ -4,6 +4,7 @@
 
 #include "graph.h"
 #include "linked_list.h"
+#include "hash.h"
 
 class NodoG{
  public:
@@ -21,6 +22,16 @@ class NodoG{
   friend ostream& operator<<(ostream&, const NodoG&);
  private:
   int nodoId;
+};
+
+template<>
+class hash<NodoG>
+{
+public:
+	size_t operator()(const NodoG n) const
+	{
+		return (size_t)n.getId();
+	}
 };
 
 ostream& operator<<(ostream& os, const NodoG& n){

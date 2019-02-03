@@ -2,7 +2,11 @@
 #define GRAPH_H
 
 #include "linked_list.h"
+#include "hash.h"
+#include "queuevt.h"
+#include <climits>
 
+using namespace std;
 template<class P, class N>
 	class Arco_ {
  public:
@@ -42,10 +46,110 @@ template<class E, class P, class N>
 	virtual int numArchi() = 0;
 
 	virtual ~Graph(){};
+	int inDegree(Nodo);
+  int outDegree(Nodo);
+  double meanOutDegree();
+  void findPath(Nodo, Nodo);
+
+
+
 	template <class A, class B, class C>
 	friend ostream& operator<<(ostream&, const Graph<A,B,C>&);
 
 };
+
+template<class E, class P, class N>
+int Graph<E,P,N>::inDegree(Nodo n){
+	if(esisteNodo(n)){
+		int in=0;
+		ListaNodi l=list_nodi();
+		typename ListaNodi::position p=l.begin();
+
+		while(!l.end(p)){
+
+			if(*l.read(p)!=n){
+
+				ListaNodi a=Adiacenti(*l.read(p));
+				typename ListaNodi::position f=a.begin();
+
+				while(!a.end(f)){
+
+					if(*a.read(f)==n) in++;
+					f=a.next(f);
+				}
+			}
+			p=l.next(p);
+		}
+		return in;
+	}
+	return -1;
+}
+
+template<class E, class P, class N>
+int Graph<E,P,N>::outDegree(Nodo n){
+	if(esisteNodo(n))	return Adiacenti(n).size();
+	return -1;
+}
+
+template<class E, class P, class N>
+double Graph<E,P,N>::meanOutDegree(){
+
+	if(vuoto())return 0;
+
+	double mean=0;
+	ListaNodi l=list_nodi();
+	typename ListaNodi::position p=l.begin();
+	while(!l.end(p)){
+		mean+=Adiacenti(*l.read(p)).size();
+		p=l.next(p);
+	}
+	mean=mean/l.size();
+	return mean;
+}
+
+template<class E, class P, class N>
+void Graph<E,P,N>::findPath(Nodo a, Nodo b){
+
+	hash_table<Nodo*, int> distance(numNodi);
+	hash_table<Nodo*, Nodo*> previous(numNodi);
+
+	queue<Nodo> tovisit(numNodi);
+	tovisit.push_back(a);
+
+	ListaNodi l=list_nodi();
+
+	typename ListaNodi::position p=l.begin();
+	while(!l.end(p)){
+
+		if(*l.read(p)!=a){
+			distance.insert(l.read(p),INT_MAX);
+			previous.insert(l.read(p),nullptr);
+		}
+		p=l.next(p);
+	}
+
+	while(!tovisit.empty()){
+		Nodo v= tovisit.top();
+		tovisit.pop();
+
+		ListaNodi ad=Adiacenti(v);
+		typename ListaNodi::position f=ad.begin();
+
+		while(!ad.end(f)){
+			if(previous[ad.read(f)]==-1){
+				tovisit.push(ad.read(f));
+			}
+
+			int dist=distance[v]+leggiPeso(v, ad.read(f));
+			if(dist<distance[ad.read(f)]){
+				previous.modify(ad.read(f),v);
+				distance.modify(ad.read(f),dist);
+			}
+		}
+	}
+
+
+}
 
 template <class A, class B, class C>
 ostream& operator<<(ostream& os, const Graph<A,B,C>& g){
@@ -89,7 +193,6 @@ ostream& operator<<(ostream& os, const Graph<A,B,C>& g){
 			p=l.next(p);
 		}
 	}
-
 	return os;
 }
 
