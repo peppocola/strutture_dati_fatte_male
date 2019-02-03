@@ -46,6 +46,10 @@ class NodoG{
 	int getId(){ return nodoId; }
 	void setId(int id) {nodoId = id;}
   friend ostream& operator<<(ostream&, const NodoG&);
+  bool operator==(const NodoG& g){
+    if (this->getId()==g.getId()) return true;
+    return false;
+  }
  private:
 	int nodoId;
 };
@@ -164,6 +168,7 @@ template<class E, class P>
 	if (canc){
 		delete matrice[n.getId()].archi;
 		matrice[n.getId()].vuoto = true;
+    nodi--;
 	}
 }
 
