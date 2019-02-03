@@ -1,7 +1,7 @@
 #ifndef _BINTREE_H_
 #define _BINTREE_H_
 #include <iostream>
-#include <queue>
+#include "queuept.h"
 
 using namespace std;
 
@@ -117,9 +117,9 @@ void bintree<T,N>::BFS(Nodo n){
   queue<Nodo> q;
   q.push(n);
   while (!q.empty()){
-    //esamina q.front
-    if(!sx_empty(q.front())) q.push(sx(q.front()));
-    if(!dx_empty(q.front())) q.push(dx(q.front()));
+    //esamina q.top
+    if(!sx_empty(q.top())) q.push(sx(q.top()));
+    if(!dx_empty(q.top())) q.push(dx(q.top()));
     q.pop();
   }
 }
@@ -175,9 +175,9 @@ int bintree<T,N>::_width(Nodo n, int w){
 
     int j=0;
     while(j<i){
-      Nodo front=q.front();
-      if (!sx_empty(front)) q.push(sx(front));
-      if (!dx_empty(front)) q.push(dx(front));
+      Nodo top=q.top();
+      if (!sx_empty(top)) q.push(sx(top));
+      if (!dx_empty(top)) q.push(dx(top));
       q.pop();
       j++;
     }
@@ -193,10 +193,10 @@ int bintree<T,N>::kSubtree(const Nodo n, const int k)const{
   queue<Nodo> q;
   q.push(n);
   while (!q.empty()){
-    Nodo front=q.front();
-    if (sumSubtree(front)==k) result++;
-    if(!sx_empty(front)) q.push(sx(front));
-    if(!dx_empty(front)) q.push(dx(front));
+    Nodo top=q.top();
+    if (sumSubtree(top)==k) result++;
+    if(!sx_empty(top)) q.push(sx(top));
+    if(!dx_empty(top)) q.push(dx(top));
     q.pop();
   }
   return result;
@@ -226,11 +226,11 @@ int bintree<T,N>::maxSumSubtree(const Nodo n)const{
   if(!dx_empty(n)) q.push(dx(n));
 
   while (!q.empty()){
-    Nodo front=q.front();
-    int tmp=sumSubtree(front);
+    Nodo top=q.top();
+    int tmp=sumSubtree(top);
     if (tmp>result) result=tmp;
-    if(!sx_empty(front)) q.push(sx(front));
-    if(!dx_empty(front)) q.push(dx(front));
+    if(!sx_empty(top)) q.push(sx(top));
+    if(!dx_empty(top)) q.push(dx(top));
     q.pop();
   }
   return result;
