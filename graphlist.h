@@ -1,5 +1,6 @@
 #ifndef GRAPHLIST_H
 #define GRAPHLIST_H
+#define DEFAULTSIZE 10
 
 #include "graph.h"
 #include "linked_list.h"
@@ -11,11 +12,17 @@ class NodoG{
   }
   NodoG(){
   }
-  int getId(){ return nodoId; }
+  int getId()const{ return nodoId; }
   void setId(int id) {nodoId = id;}
+  friend ostream& operator<<(ostream&, const NodoG&);
  private:
   int nodoId;
 };
+
+ostream& operator<<(ostream& os, const NodoG& n){
+  os<<n.nodoId;
+  return os;
+}
 
 
 template<class P>
@@ -23,6 +30,10 @@ class InfoArco {
  public:
   P peso;
   NodoG _to;
+  bool operator==(const InfoArco<P>& a)const{
+    if(a._to.getId()==this->_to.getId())return true;
+    return false;
+  }
 };
 
 
@@ -53,6 +64,7 @@ template<class E, class P>
     typedef typename Graph_::ListaNodi ListaNodi;
     typedef typename Graph_::ListaNodiPos ListaNodiPos;
 
+    GraphList();
     GraphList(int);
     ~GraphList();
 
@@ -61,8 +73,8 @@ template<class E, class P>
     void insArco(Nodo, Nodo, Peso);
     void cancNodo(Nodo);
     void cancArco(Nodo, Nodo);
-    //    bool esisteNodo(Nodo);
-    //    bool esisteArco(Arco);
+    bool esisteNodo(Nodo);
+    bool esisteArco(Nodo, Nodo);
     ListaNodi Adiacenti(Nodo) const ;
     ListaNodi list_nodi() const ;
     Etichetta leggiEtichetta(Nodo) const ;
@@ -85,6 +97,16 @@ template<class E, class P>
     int archi;
 };
 
+
+template<class E, class P>
+  GraphList<E, P>::GraphList(){
+  dimensione = DEFAULTSIZE;
+  nodi = 0;
+  archi = 0;
+  matrice = new InfoNodo<E,P>[dimensione];
+  for (int i=0; i<dimensione; i++)
+    matrice[i].archi.create();
+}
 
 template<class E, class P>
   GraphList<E, P>::GraphList(int _dimensione){
@@ -120,24 +142,38 @@ template<class E, class P>
 
 template<class E, class P>
   void GraphList<E, P>::insArco(Nodo n1, Nodo n2, P peso) {
-  InfoArco<P> I;
-  I.peso = peso;
-  I._to = n2;
-  matrice[n1.getId()].archi.insert(I, matrice[n1.getId()].archi.begin());
-  archi++;
-}
 
+  if (esisteNodo(n1)&&esisteNodo(n2)){
+    InfoArco<P> I;
+    I.peso = peso;
+    I._to = n2;
+    matrice[n1.getId()].archi.insert(I, matrice[n1.getId()].archi.begin());
+    archi++;
+  }
+}
+//CHECK
 
 template<class E, class P>
   void GraphList<E, P>::cancNodo(Nodo n) {
   // ATTENZIONE: controllare prima che non ci siano archi uscenti o entranti in n
   bool canc = true;
   int i;
-  for (i=0; i < dimensione && canc; i++)
-    if (!matrice[n.getId()].archi.empty())
-      canc = false;
+  if (!matrice[n.getId()].archi.empty())
+    canc = false;
   // TODO: implementare il controllo sugli archi entranti
+  for (i=0; i < dimensione && canc; i++){
 
+    if(!matrice[i].vuoto){
+      Linked_list<InfoArco<P>> archi=matrice[i].archi;
+      typename Linked_list<InfoArco<P>>::position tmp=archi.begin();
+
+      while(canc && !archi.end(tmp)){
+        if(archi.read(tmp)._to.getId()==n.getId()){
+           canc=false;
+        }else tmp=archi.next(tmp);
+      }
+    }
+  }
   if (canc){
     // la lista  matrice[n.getId()].archi Ã¨ vuota;
     matrice[n.getId()].vuoto = true;
@@ -163,8 +199,11 @@ template<class E, class P>
 template<class E, class P>
   typename GraphList<E, P>::ListaNodi GraphList<E, P>::Adiacenti(Nodo n) const{
   ListaNodi list;
-
-  // TODO: costruire la lista dei nodi dalla lista degli adiacenti matrice[n.getId()].archi
+  typename Linked_list<InfoArco<P>>::position p = matrice[n.getId()].archi.begin();
+  while(!matrice[n.getId()].archi.end(p)){
+    list.insert(new NodoG (matrice[n.getId()].archi.read(p)._to.getId()), list.begin());
+    p=matrice[n.getId()].archi.next(p);
+  }
   return list;
 
 }
@@ -205,7 +244,7 @@ template<class E, class P>
 
 template<class E, class P>
   void GraphList<E, P>::scriviPeso(Nodo n1, Nodo n2, P peso) {
-	typename Linked_list<InfoArco<P> >::position p; 
+	typename Linked_list<InfoArco<P> >::position p;
 	p = matrice[n1.getId()].archi.begin();
 	bool trovato = false;
 	while (!matrice[n1.getId()].archi.end(p) && !trovato){
@@ -220,6 +259,31 @@ template<class E, class P>
 		I._to = n2;
 		matrice[n1.getId()].archi.write(I,p);
 	}
+}
+
+template<class E, class P>
+bool GraphList<E, P>::esisteNodo(Nodo n){
+  if (n.getId()>=dimensione) return false;
+  if (matrice[n.getId()].vuoto) return false;
+  return true;
+}
+
+template<class E, class P>
+bool GraphList<E, P>::esisteArco(Nodo nodo1, Nodo nodo2){
+  if (nodo1.getId()>=dimensione) return false;
+  if (nodo2.getId()>=dimensione) return false;
+  if (matrice[nodo1.getId()].vuoto) return false;
+  if (matrice[nodo2.getId()].vuoto) return false;
+
+  typename Linked_list<InfoArco<P> >::position p = matrice[nodo1.getId()].archi.begin();;
+
+	while (!matrice[nodo1.getId()].archi.end(p)){
+		if (matrice[nodo1.getId()].archi.read(p)._to.getId() == nodo2.getId())
+			return true;
+		else
+				p = matrice[nodo1.getId()].archi.next(p);
+	}
+  return false;
 }
 
 #endif

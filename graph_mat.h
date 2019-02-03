@@ -1,5 +1,6 @@
 #ifndef GRAPH_MAT_H
 #define GRAPH_MAT_H
+#define DEFAULTSIZE 10
 
 #include "graph.h"
 
@@ -44,10 +45,15 @@ class NodoG{
 	}
 	int getId(){ return nodoId; }
 	void setId(int id) {nodoId = id;}
+  friend ostream& operator<<(ostream&, const NodoG&);
  private:
 	int nodoId;
 };
 
+ostream& operator<<(ostream& os, const NodoG& n){
+  os<<n.nodoId;
+  return os;
+}
 
 template<class E, class P>
 	class Graph_mat : public Graph<E, P, NodoG > {
@@ -56,10 +62,11 @@ template<class E, class P>
     typedef P Peso;
     typedef NodoG Nodo;
     typedef Arco_<Peso, Nodo> Arco;
-    typedef Graph<Etichetta, Peso, Nodo> Grafo_;
-    typedef typename Grafo_::ListaNodi ListaNodi;
-		typedef typename Grafo_::ListaNodiPos ListaNodiPos;
+    typedef Graph<Etichetta, Peso, Nodo> Graph_;
+    typedef typename Graph_::ListaNodi ListaNodi;
+		typedef typename Graph_::ListaNodiPos ListaNodiPos;
 
+    Graph_mat();
     Graph_mat(int);
     ~Graph_mat();
 
@@ -68,8 +75,8 @@ template<class E, class P>
     void insArco(Nodo, Nodo, Peso);
     void cancNodo(Nodo);
     void cancArco(Nodo, Nodo);
-		//    bool esisteNodo(Nodo);
-		//    bool esisteArco(Arco);
+		bool esisteNodo(Nodo);
+		bool esisteArco(Nodo, Nodo);
     ListaNodi Adiacenti(Nodo) const ;
     ListaNodi list_nodi() const ;
     Etichetta leggiEtichetta(Nodo) const ;
@@ -84,7 +91,6 @@ template<class E, class P>
 			return archi;
 		};
 
-
  private:
     InfoNodo<E,P>* matrice;
     int dimensione;
@@ -92,6 +98,16 @@ template<class E, class P>
 		int archi;
 };
 
+
+template<class E, class P>
+	Graph_mat<E, P>::Graph_mat(){
+	dimensione = DEFAULTSIZE;
+	nodi = 0;
+	archi = 0;
+	matrice = new InfoNodo<E,P>[dimensione];
+	for (int i=0; i<dimensione; i++)
+		matrice[i].archi = new InfoArco<P>[dimensione];
+}
 
 template<class E, class P>
 	Graph_mat<E, P>::Graph_mat(int _dimensione){
@@ -196,6 +212,18 @@ template<class E, class P>
 template<class E, class P>
 	void Graph_mat<E, P>::scriviPeso(Nodo n1, Nodo n2, P peso) {
 	matrice[n1.getId()].archi[n2.getId()].peso = peso;
+}
+
+template<class E, class P>
+bool Graph_mat<E, P>::esisteNodo(Nodo n){
+  if(matrice[n.getId()].vuoto) return false;
+  return true;
+}
+
+template<class E, class P>
+bool Graph_mat<E, P>::esisteArco(Nodo nodo1, Nodo nodo2){
+  if(matrice[nodo1.getId()].archi[nodo2.getId()].vuoto) return false;
+  return true;
 }
 
 #endif
