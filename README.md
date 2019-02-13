@@ -9,3 +9,5 @@ to do list:
 -implementation of set and mfset
 
 -implementation of BST
+
+DO NOT USE GRAPHS THEY'RE BROKEN
