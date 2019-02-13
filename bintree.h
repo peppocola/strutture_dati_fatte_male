@@ -143,7 +143,7 @@ int bintree<T,N>::_depth(Nodo n, int i){
   }
 
   if (!dx_empty(n)){
-    int tmp=_depth(dx(n),dp);
+    int tmp=_depth(dx(n),i);
     if (tmp>dp){
       dp=tmp;
     }
