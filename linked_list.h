@@ -223,6 +223,7 @@ void Linked_list< T >::erase(position p)const{
 	if (!empty() && !end(p)){
 		p->_pPrev->_pNext = p->_pNext;
 		p->_pNext->_pPrev = p->_pPrev;
+		length--;
 		delete p;
 	}
 }
