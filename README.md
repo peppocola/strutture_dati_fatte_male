@@ -10,4 +10,3 @@ to do list:
 
 -implementation of BST
 
-DO NOT USE GRAPHS THEY'RE BROKEN
